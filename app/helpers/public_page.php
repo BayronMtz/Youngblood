@@ -45,6 +45,7 @@ class Public_Page
                                     <a href="#" data-target="mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
                                     <ul class="right hide-on-med-and-down">
                                         <li><a href="index.php"><i class="material-icons left">view_module</i>Catálogo</a></li>
+                                        <li><a href="index.php"><i class="material-icons left">search</i>Buscar producto</a></li>
                                         <li><a href="cart.php"><i class="material-icons left">shopping_cart</i>Carrito</a></li>
                                         <li><a href="#" onclick="logOut()"><i class="material-icons left">close</i>Cerrar sesión</a></li>
                                     </ul>
@@ -53,6 +54,7 @@ class Public_Page
                         </div>
                         <ul class="sidenav" id="mobile">
                             <li><a href="index.php"><i class="material-icons left">view_module</i>Catálogo</a></li>
+                            <li><a href="index.php"><i class="material-icons left">search</i>Buscar producto</a></li>
                             <li><a href="cart.php"><i class="material-icons left">shopping_cart</i>Carrito</a></li>
                             <li><a href="#" onclick="logOut()"><i class="material-icons left">close</i>Cerrar sesión</a></li>
                         </ul>
@@ -74,6 +76,7 @@ class Public_Page
                                     <a href="#" data-target="mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
                                     <ul class="right hide-on-med-and-down">
                                         <li><a href="index.php"><i class="material-icons left">view_module</i>Catálogo</a></li>
+                                        <li><a href="index.php"><i class="material-icons left">search</i>Buscar producto</a></li>
                                         <li><a href="signin.php"><i class="material-icons left">person</i>Crear cuenta</a></li>
                                         <li><a href="login.php"><i class="material-icons left">login</i>Iniciar sesión</a></li>
                                     </ul>
@@ -82,7 +85,7 @@ class Public_Page
                         </div>
                         <ul class="sidenav" id="mobile">
                             <li><a href="index.php"><i class="material-icons left">view_module</i>Catálogo</a></li>
-                            <li><a href="index.php"><i class="material-icons left">view_module</i>Catálogo</a></li>
+                            <li><a href="index.php"><i class="material-icons left">search</i>Buscar producto</a></li>
                             <li><a href="signin.php"><i class="material-icons left">person</i>Crear cuenta</a></li>
                             <li><a href="login.php"><i class="material-icons left">login</i>Iniciar sesión</a></li>
                         </ul>

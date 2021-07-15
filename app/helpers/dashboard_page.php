@@ -42,15 +42,19 @@ class Dashboard_Page
                 print('
                     <header>
                         <div class="navbar-fixed">
-                            <nav class="deep-purple darken-4">
+                            <nav class="indigo darken-4">
                                 <div class="nav-wrapper">
                                     <a href="main.php" class="brand-logo"><img src="../../resources/img/logo.png" height="60"></a>
                                     <a href="#" data-target="mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
                                     <ul class="right hide-on-med-and-down">
                                         <li><a href="productos.php"><i class="material-icons left">shop</i>Productos</a></li>
                                         <li><a href="categorias.php"><i class="material-icons left">shop_two</i>Categorías</a></li>
+                                        <li><a href="pedidos.php"><i class="material-icons left">local_shipping</i>Pedidos</a></li>
+                                        <li><a href="clientes.php"><i class="material-icons left">contacts</i>Clientes</a></li>
+                                        <li><a href="valoraciones.php"><i class="material-icons left">star</i>Valoraciones</a></li>
                                         <li><a href="usuarios.php"><i class="material-icons left">group</i>Usuarios</a></li>
                                         <li><a href="#" class="dropdown-trigger" data-target="dropdown"><i class="material-icons left">verified_user</i>Cuenta: <b>' . $_SESSION['alias_usuario'] . '</b></a></li>
+
                                     </ul>
                                     <ul id="dropdown" class="dropdown-content">
                                         <li><a href="#" onclick="openProfileDialog()"><i class="material-icons">face</i>Editar perfil</a></li>
@@ -61,9 +65,12 @@ class Dashboard_Page
                             </nav>
                         </div>
                         <ul class="sidenav" id="mobile">
-                            <li><a href="productos.php"><i class="material-icons">shop</i>Productos</a></li>
-                            <li><a href="categorias.php"><i class="material-icons">shop_two</i>Categorías</a></li>
-                            <li><a href="usuarios.php"><i class="material-icons">group</i>Usuarios</a></li>
+                            <li><a href="productos.php"><i class="material-icons left">shop</i>Productos</a></li>
+                            <li><a href="categorias.php"><i class="material-icons left">shop_two</i>Categorías</a></li>
+                            <li><a href="pedidos.php"><i class="material-icons left">local_shipping</i>Pedidos</a></li>
+                            <li><a href="clientes.php"><i class="material-icons left">contacts</i>Clientes</a></li>
+                            <li><a href="valoraciones.php"><i class="material-icons left">star</i>Valoraciones</a></li>
+                            <li><a href="usuarios.php"><i class="material-icons left">group</i>Usuarios</a></li>
                             <li><a class="dropdown-trigger" href="#" data-target="dropdown-mobile"><i class="material-icons">verified_user</i>Cuenta: <b>' . $_SESSION['alias_usuario'] . '</b></a></li>
                         </ul>
                         <ul id="dropdown-mobile" class="dropdown-content">
@@ -87,7 +94,7 @@ class Dashboard_Page
                 print('
                     <header>
                         <div class="navbar-fixed">
-                            <nav class="deep-purple darken-4">
+                            <nav class="indigo darken-4">
                                 <div class="nav-wrapper">
                                     <a href="index.php" class="brand-logo"><i class="material-icons">dashboard</i></a>
                                 </div>
@@ -130,7 +137,7 @@ class Dashboard_Page
         }
         print('
                     </main>
-                    <footer class="page-footer deep-purple darken-4">
+                    <footer class="page-footer indigo darken-4">
                         <div class="container">
                             <div class="row">
                                 <div class="col s12 m6 l6">
@@ -146,7 +153,7 @@ class Dashboard_Page
                         <div class="footer-copyright">
                             <div class="container">
                                 <span>© YOUNGBLOOD, todos los derechos reservados.</span>
-                                <span class="white-text right">Be Brave, <a class="red-text text-accent-1" href="#"><b>Be Young</b></a></span>
+                                <span class="white-text right">Diseñado con <a class="red-text text-accent-1" href="http://materializecss.com/" target="_blank"><b>Materialize</b></a></span>
                             </div>
                         </div>
                     </footer>

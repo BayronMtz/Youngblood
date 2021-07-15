@@ -17,7 +17,7 @@ class Clientes extends Validator
     private $estado = null; // Valor por defecto en la base de datos: true
 
     /*
-    *   Métodos para asignar valores a los atributos.
+    *   Métodos para validar y asignar valores de los atributos.
     */
     public function setId($value)
     {
@@ -218,6 +218,15 @@ class Clientes extends Validator
         return Database::executeRow($sql, $params);
     }
 
+    public function changeStatus()
+    {
+        $sql = 'UPDATE clientes
+                SET estado_cliente = ?
+                WHERE id_cliente = ?';
+        $params = array($this->estado, $this->id);
+        return Database::executeRow($sql, $params);
+    }
+
     /*
     *   Métodos para realizar las operaciones SCRUD (search, create, read, update, delete).
     */
@@ -225,9 +234,9 @@ class Clientes extends Validator
     {
         $sql = 'SELECT id_cliente, nombres_cliente, apellidos_cliente, correo_cliente, dui_cliente, telefono_cliente, nacimiento_cliente, direccion_cliente
                 FROM clientes
-                WHERE apellidos_cliente ILIKE ? OR nombres_cliente ILIKE ?
+                WHERE apellidos_cliente ILIKE ? OR nombres_cliente ILIKE ? OR correo_cliente ILIKE ?
                 ORDER BY apellidos_cliente';
-        $params = array("%$value%", "%$value%");
+        $params = array("%$value%", "%$value%", "%$value%");
         return Database::getRows($sql, $params);
     }
 
@@ -252,19 +261,19 @@ class Clientes extends Validator
 
     public function readOne()
     {
-        $sql = 'SELECT id_cliente, nombres_cliente, apellidos_cliente, correo_cliente, dui_cliente, telefono_cliente, nacimiento_cliente, direccion_cliente
+        $sql = 'SELECT id_cliente, nombres_cliente, apellidos_cliente, correo_cliente, dui_cliente, telefono_cliente, nacimiento_cliente, direccion_cliente, estado_cliente
                 FROM clientes
                 WHERE id_cliente = ?';
         $params = array($this->id);
         return Database::getRow($sql, $params);
     }
 
-    public function updateState()
+    public function updateRow()
     {
         $sql = 'UPDATE clientes
-                SET estado_cliente = ?
+                SET nombres_cliente = ?, apellidos_cliente = ?, dui_cliente = ?, estado_cliente = ?, telefono_cliente = ?, nacimiento_cliente = ?, direccion_cliente = ?
                 WHERE id_cliente = ?';
-        $params = array($this->id);
+        $params = array($this->nombres, $this->apellidos, $this->dui, $this->estado, $this->telefono, $this->nacimiento, $this->direccion, $this->id);
         return Database::executeRow($sql, $params);
     }
 
