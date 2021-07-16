@@ -66,7 +66,7 @@ Dashboard_Page::headerTemplate('Administrar productos');
                 </div>
                 <div class="input-field col s12 m6">
                   	<i class="material-icons prefix">exposure_plus_1</i>
-                  	<input id="cantidad" type="number" name="cantidad" class="validate" max="999.99" min="0.01" step="any" required/>
+                  	<input id="cantidad" type="number" name="cantidad" class="validate" max="999" min="1" step="any" required/>
                   	<label for="cantidad">Cantidad</label>
                 </div>
                 <div class="input-field col s12 m6">
