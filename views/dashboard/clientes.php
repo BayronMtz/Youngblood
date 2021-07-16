@@ -15,6 +15,7 @@ Dashboard_Page::headerTemplate('Administrar clientes');
         </div>
         <div class="input-field col s6 m4">
             <button type="submit" class="btn waves-effect green tooltipped" data-tooltip="Buscar"><i class="material-icons">check_circle</i></button>
+            <button type="button" id="btnReiniciar" class="btn waves-effect blue tooltipped" data-tooltip="Reiniciar búsqueda"><i class="material-icons">replay</i></button>
         </div>
     </form>
     <div class="input-field center-align col s12 m4">
@@ -24,7 +25,7 @@ Dashboard_Page::headerTemplate('Administrar clientes');
 </div>
 
 <!-- Tabla para mostrar los registros existentes -->
-<table class="highlight">
+<table class="highlight" id="data-table">
     <!-- Cabeza de la tabla para mostrar los títulos de las columnas -->
     <thead>
         <tr>

@@ -482,3 +482,7 @@ ALTER TABLE ONLY public.pedidos
 -- PostgreSQL database dump complete
 --
 
+--Cambios
+ALTER TABLE productos ADD COLUMN cantidad NUMERIC;
+UPDATE productos SET cantidad = 10;
+

@@ -22,10 +22,12 @@ function fillTable(dataset) {
                 <td>${row.nombre_producto}</td>
                 <td>${row.precio_producto}</td>
                 <td>${row.nombre_categoria}</td>
+                <td>${row.cantidad}</td>
                 <td><i class="material-icons">${icon}</i></td>
-                <td>
+                <td style="display: flex;">
                     <a href="#" onclick="openUpdateDialog(${row.id_producto})" class="btn waves-effect blue tooltipped" data-tooltip="Actualizar"><i class="material-icons">mode_edit</i></a>
                     <a href="#" onclick="openDeleteDialog(${row.id_producto})" class="btn waves-effect red tooltipped" data-tooltip="Eliminar"><i class="material-icons">delete</i></a>
+                    <a href="#" onclick="updateQuantityDialog(${row.id_producto}, ${row.cantidad})" class="btn waves-effect cyan lighten-1 tooltipped" data-tooltip="Agregar Cantidad"><i class="material-icons">exposure_plus_1</i></a>
                 </td>
             </tr>
         `;
@@ -91,6 +93,7 @@ function openUpdateDialog(id) {
                     document.getElementById('nombre_producto').value = response.dataset.nombre_producto;
                     document.getElementById('precio_producto').value = response.dataset.precio_producto;
                     document.getElementById('descripcion_producto').value = response.dataset.descripcion_producto;
+                    document.getElementById('cantidad').value = response.dataset.cantidad;
                     fillSelect(ENDPOINT_CATEGORIAS, 'categoria_producto', response.dataset.id_categoria);
                     if (response.dataset.estado_producto) {
                         document.getElementById('estado_producto').checked = true;
@@ -111,6 +114,50 @@ function openUpdateDialog(id) {
     });
 }
 
+// Función para preparar el formulario al momento de modificar la cantidad de un producto.
+function updateQuantityDialog(id, cantidad){
+    // Se abre la caja de dialogo (modal) que contiene el formulario.
+    let instance = M.Modal.getInstance(document.getElementById('cantidad-modal'));
+    instance.open();
+
+    //Asignando valores para poder funcionar
+    document.getElementById('id_producto2').value = id;
+    document.getElementById('contador').textContent = 1;
+    document.getElementById('cantidadOriginal').value = cantidad;
+
+}
+
+//Metodo que se ejecuta al presionar el boton menos.
+document.getElementById('menos').addEventListener('click',function(event){
+    //Se evita recargar la pagina
+    event.preventDefault();
+    //Se convierte a entero el valor del contador.
+    var contador = parseInt(document.getElementById('contador').textContent);
+    //Se resta una unidad
+    contador--;
+
+    //Se valida que el contador no llegue hasta 0;
+    if (contador == 0) {
+        sweetAlert(2, 'El contador no puede llegar a 0.',null);
+        document.getElementById('contador').textContent = 1;
+    } else {
+        document.getElementById('contador').textContent = contador;
+    }
+});
+
+//Metodo que se ejecuta al presionar el boton mas.
+document.getElementById('mas').addEventListener('click',function(event){
+    //Se evita recargar la pagina
+    event.preventDefault();
+    //Se convierte a entero el valor del contador.
+    var contador = parseInt(document.getElementById('contador').textContent);
+    //Se suma una unidad
+    contador++;
+    //Se asigna el valor al contador.   
+    document.getElementById('contador').textContent = contador;
+
+});
+
 // Método manejador de eventos que se ejecuta cuando se envía el formulario de guardar.
 document.getElementById('save-form').addEventListener('submit', function (event) {
     // Se evita recargar la página web después de enviar el formulario.
@@ -124,6 +171,20 @@ document.getElementById('save-form').addEventListener('submit', function (event)
         action = 'create';
     }
     saveRow(API_PRODUCTOS, action, 'save-form', 'save-modal');
+});
+
+// Método manejador de eventos que se ejecuta cuando se envía el formulario de guardar.
+document.getElementById('cantidad-form').addEventListener('submit', function (event) {
+    // Se evita recargar la página web después de enviar el formulario.
+    event.preventDefault();
+    // Calculos
+    var nuevaCantidad = parseInt(document.getElementById('contador').textContent);
+    var cantidadActual = parseInt(document.getElementById('cantidadOriginal').value);
+    var suma = nuevaCantidad + cantidadActual;
+    //Asignando el resultado a un input invisible para hacer la actualización.
+    document.getElementById('cantidadNueva').value = suma;
+    //Actualización
+    saveRow(API_PRODUCTOS, 'updateCantidad', 'cantidad-form', 'cantidad-modal');
 });
 
 // Función para establecer el registro a eliminar y abrir una caja de dialogo de confirmación.

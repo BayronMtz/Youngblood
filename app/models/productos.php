@@ -12,6 +12,7 @@ class Productos extends Validator
     private $imagen = null;
     private $categoria = null;
     private $estado = null;
+    private $cantidad = null;
     private $ruta = '../../../resources/img/productos/';
 
     /*
@@ -21,6 +22,16 @@ class Productos extends Validator
     {
         if ($this->validateNaturalNumber($value)) {
             $this->id = $value;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function setCantidad($value)
+    {
+        if ($this->validateNaturalNumber($value)) {
+            $this->cantidad = $value;
             return true;
         } else {
             return false;
@@ -100,6 +111,11 @@ class Productos extends Validator
         return $this->nombre;
     }
 
+    public function getCantidad()
+    {
+        return $this->cantidad;
+    }
+
     public function getDescripcion()
     {
         return $this->descripcion;
@@ -135,7 +151,7 @@ class Productos extends Validator
     */
     public function searchRows($value)
     {
-        $sql = 'SELECT id_producto, imagen_producto, nombre_producto, descripcion_producto, precio_producto, nombre_categoria, estado_producto
+        $sql = 'SELECT id_producto, imagen_producto, nombre_producto, descripcion_producto, precio_producto, nombre_categoria, estado_producto, cantidad
                 FROM productos INNER JOIN categorias USING(id_categoria)
                 WHERE nombre_producto ILIKE ? OR descripcion_producto ILIKE ?
                 ORDER BY nombre_producto';
@@ -145,15 +161,15 @@ class Productos extends Validator
 
     public function createRow()
     {
-        $sql = 'INSERT INTO productos(nombre_producto, descripcion_producto, precio_producto, imagen_producto, estado_producto, id_categoria, id_usuario)
-                VALUES(?, ?, ?, ?, ?, ?, ?)';
-        $params = array($this->nombre, $this->descripcion, $this->precio, $this->imagen, $this->estado, $this->categoria, $_SESSION['id_usuario']);
+        $sql = 'INSERT INTO productos(nombre_producto, descripcion_producto, precio_producto, imagen_producto, estado_producto, id_categoria, cantidad, id_usuario)
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?)';
+        $params = array($this->nombre, $this->descripcion, $this->precio, $this->imagen, $this->estado, $this->categoria,$this->cantidad, $_SESSION['id_usuario']);
         return Database::executeRow($sql, $params);
     }
 
     public function readAll()
     {
-        $sql = 'SELECT id_producto, imagen_producto, nombre_producto, descripcion_producto, precio_producto, nombre_categoria, estado_producto
+        $sql = 'SELECT id_producto, imagen_producto, nombre_producto, descripcion_producto, precio_producto, nombre_categoria, estado_producto, cantidad
                 FROM productos INNER JOIN categorias USING(id_categoria)
                 ORDER BY nombre_producto';
         $params = null;
@@ -162,7 +178,7 @@ class Productos extends Validator
 
     public function readOne()
     {
-        $sql = 'SELECT id_producto, nombre_producto, descripcion_producto, precio_producto, imagen_producto, id_categoria, estado_producto
+        $sql = 'SELECT id_producto, nombre_producto, descripcion_producto, precio_producto, imagen_producto, id_categoria, estado_producto, cantidad
                 FROM productos
                 WHERE id_producto = ?';
         $params = array($this->id);
@@ -175,9 +191,9 @@ class Productos extends Validator
         ($this->imagen) ? $this->deleteFile($this->getRuta(), $current_image) : $this->imagen = $current_image;
 
         $sql = 'UPDATE productos
-                SET imagen_producto = ?, nombre_producto = ?, descripcion_producto = ?, precio_producto = ?, estado_producto = ?, id_categoria = ?
+                SET imagen_producto = ?, nombre_producto = ?, descripcion_producto = ?, precio_producto = ?, estado_producto = ?, id_categoria = ?, cantidad = ?
                 WHERE id_producto = ?';
-        $params = array($this->imagen, $this->nombre, $this->descripcion, $this->precio, $this->estado, $this->categoria, $this->id);
+        $params = array($this->imagen, $this->nombre, $this->descripcion, $this->precio, $this->estado, $this->categoria, $this->cantidad, $this->id);
         return Database::executeRow($sql, $params);
     }
 
@@ -186,6 +202,13 @@ class Productos extends Validator
         $sql = 'DELETE FROM productos
                 WHERE id_producto = ?';
         $params = array($this->id);
+        return Database::executeRow($sql, $params);
+    }
+
+    public function updateCantidad()
+    {
+        $sql = 'UPDATE productos SET cantidad = ? WHERE id_producto = ?';
+        $params = array($this->cantidad, $this->id);
         return Database::executeRow($sql, $params);
     }
 

@@ -146,7 +146,7 @@ class Dashboard_Page
                                 </div>
                                 <div class="col s12 m6 l6">
                                     <h5 class="white-text">Enlaces</h5>
-                                    <a class="white-text" href="http://localhost/young/views/public/" target="_blank"><i class="material-icons left">store</i>Sitio público</a>
+                                    <a class="white-text" href="http://localhost/youngblood/views/public/" target="_blank"><i class="material-icons left">store</i>Sitio público</a>
                                 </div>
                             </div>
                         </div>

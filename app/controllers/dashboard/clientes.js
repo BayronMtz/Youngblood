@@ -28,6 +28,7 @@ function fillTable(dataset) {
     });
     // Se agregan las filas al cuerpo de la tabla mediante su id para mostrar los registros.
     document.getElementById('tbody-rows').innerHTML = content;
+   
     // Se inicializa el componente Tooltip asignado a los enlaces para que funcionen las sugerencias textuales.
     M.Tooltip.init(document.querySelectorAll('.tooltipped'));
 }
@@ -131,3 +132,10 @@ function openDeleteDialog(id) {
     // Se llama a la función que elimina un registro. Se encuentra en el archivo components.js
     confirmDelete(API_CLIENTES, data);
 }
+
+//Para reiniciar la busqueda
+document.getElementById('btnReiniciar').addEventListener('click',function(event){
+    event.preventDefault();
+
+    readRows(API_CLIENTES);
+})

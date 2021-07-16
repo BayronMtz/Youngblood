@@ -34,6 +34,7 @@ Dashboard_Page::headerTemplate('Administrar productos');
             <th>NOMBRE</th>
             <th>PRECIO (US$)</th>
             <th>CATEGORÍA</th>
+            <th>CANTIDAD</th>
             <th>ESTADO</th>
             <th class="actions-column">ACCIONES</th>
         </tr>
@@ -62,6 +63,11 @@ Dashboard_Page::headerTemplate('Administrar productos');
                   	<i class="material-icons prefix">shopping_cart</i>
                   	<input id="precio_producto" type="number" name="precio_producto" class="validate" max="999.99" min="0.01" step="any" required/>
                   	<label for="precio_producto">Precio (US$)</label>
+                </div>
+                <div class="input-field col s12 m6">
+                  	<i class="material-icons prefix">exposure_plus_1</i>
+                  	<input id="cantidad" type="number" name="cantidad" class="validate" max="999.99" min="0.01" step="any" required/>
+                  	<label for="cantidad">Cantidad</label>
                 </div>
                 <div class="input-field col s12 m6">
                   	<i class="material-icons prefix">description</i>
@@ -94,6 +100,32 @@ Dashboard_Page::headerTemplate('Administrar productos');
                             </label>
                         </div>
                     </p>
+                </div>
+            </div>
+            <div class="row center-align">
+                <a href="#" class="btn waves-effect grey tooltipped modal-close" data-tooltip="Cancelar"><i class="material-icons">cancel</i></a>
+                <button type="submit" class="btn waves-effect blue tooltipped" data-tooltip="Guardar"><i class="material-icons">save</i></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Componente Modal para mostrar una caja de dialogo -->
+<div id="cantidad-modal" class="modal">
+    <div class="modal-content">
+        <!-- Título para la caja de dialogo -->
+        <h4 id="modal-title" class="center-align">Agregar Stock al Producto</h4>
+        <!-- Formulario para crear o actualizar un registro -->
+        <form method="post" id="cantidad-form" enctype="multipart/form-data">
+            <!-- Campo oculto para asignar el id del registro al momento de modificar -->
+            <input class="hide" type="number" id="id_producto2" name="id_producto2"/>
+            <input class="hide" type="number" id="cantidadOriginal"/>
+            <input class="hide" type="number" id="cantidadNueva" name="cantidadNueva"/>
+            <div class="row center-align" style="justify-content: center;">
+                <div style="display: flex; justify-content: center; align-items: center;">
+                    <button id="menos" type="button" class="btn waves-effect green tooltipped" data-tooltip="Restar"><i class="material-icons">remove</i></button>
+                    <h5 style="margin: 10px;" id="contador">1</h5>
+                    <button id="mas" type="button" class="btn waves-effect green tooltipped" data-tooltip="Sumar"><i class="material-icons">add</i></button>
                 </div>
             </div>
             <div class="row center-align">
