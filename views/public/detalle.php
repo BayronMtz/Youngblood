@@ -28,7 +28,8 @@ Public_Page::headerTemplate('Detalles del producto');
                     <form method="post" id="shopping-form">
                         <!-- Campos ocultos para asignar los datos necesarios del producto -->
                         <input type="number" id="id_producto" name="id_producto" class="hide"/>
-                        <input type="number" id="precio_producto" name="precio_producto" class="hide"/>
+                        <input type="text" id="precio_producto" name="precio_producto" class="hide"/>
+                        <input type="number" id="nuevo_stock" name="nuevo_stock" class="hide"/>
                         <div class="row center">
                             <div class="input-field col s12 m6">
                                 <i class="material-icons prefix">list</i>
@@ -40,6 +41,7 @@ Public_Page::headerTemplate('Detalles del producto');
                             </div>
                         </div>
                     </form>
+                    <h1 id="disponiblelbl" class="hide">No disponible</h1>
                 </div>
             </div>
         </div>

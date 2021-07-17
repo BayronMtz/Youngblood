@@ -16,106 +16,107 @@ if (isset($_GET['action'])) {
         $result['session'] = 1;
         // Se compara la acción a realizar cuando un cliente ha iniciado sesión.
         switch ($_GET['action']) {
+                //Cargar productos en el carrito
+            case 'readOrderInCart':
+                if ($data = $pedido->checkOrder()) {
+                    if ($pedido->setIdPedido($data['id_pedido'])) {
+                        if ($result['dataset'] = $pedido->readOrderInCart()) {
+                            $result['status'] = 1;
+                            $result['message'] = 'Productos encontrados';
+                        } else {
+                            $result['exception'] = 'No ha agregado productos al carrito final.';
+                        }
+                    } else {
+                        $result['exception'] = 'Id incorrecto.';
+                    }
+                } else {
+                    $result['exception'] = 'No ha creado ninguna orden para el carrito.';
+                }
+                break;
+                //Agregar productos al carrito
             case 'createDetail':
-                if ($pedido->setCliente($_SESSION['id_cliente'])) {
-                    if ($pedido->readOrder()) {
-                        $_POST = $pedido->validateForm($_POST);
-                        if ($pedido->setProducto($_POST['id_producto'])) {
-                            if ($pedido->setCantidad($_POST['cantidad_producto'])) {
-                                if ($pedido->setPrecio($_POST['precio_producto'])) {
-                                    if ($pedido->createDetail()) {
-                                        $result['status'] = 1;
-                                        $result['message'] = 'Producto agregado correctamente';
+                //Se verifica si el cliente posee una orden en proceso.
+                if ($data = $pedido->checkOrder()) {
+                    //Se asignan los valores para hacer la inserción
+                    if ($pedido->setProducto($_POST['id_producto'])) {
+                        if ($pedido->setCantidad($_POST['cantidad_producto'])) {
+                            if ($pedido->setPrecio($_POST['precio_producto'])) {
+                                if ($pedido->setIdPedido($data['id_pedido'])) {
+                                    if ($pedido->noDuplicatedProducts()) {
+                                        $result['exception'] = 'El producto ya ha sido agregado al carrito en esta orden.';
+                                        break;
                                     } else {
-                                        $result['exception'] = 'Ocurrió un problema al agregar el producto';
+                                        if ($pedido->updateStock($_POST['nuevo_stock'])) {
+                                            if ($pedido->addToOrder()) {
+                                                $result['status'] = 1;
+                                                $result['message'] = 'Producto agregado al carrito correctamente.';
+                                            } else {
+                                                $result['exception'] = Database::getException();
+                                            }
+                                        } else {
+                                            $result['exception'] = Database::getException();
+                                        }
                                     }
+                                    
                                 } else {
-                                    $result['exception'] = 'Precio incorrecto';
+                                    $result['exception'] = 'Pedido invalido.';
                                 }
                             } else {
-                                $result['exception'] = 'Cantidad incorrecta';
+                                $result['exception'] = 'Precio invalido.';
                             }
                         } else {
-                            $result['exception'] = 'Producto incorrecto';
+                            $result['exception'] = 'Cantidad invalida.';
                         }
                     } else {
-                        $result['exception'] = 'Ocurrió un problema al obtener el pedido';
+                        $result['exception'] = 'Producto inexistente.';
                     }
                 } else {
-                    $result['exception'] = 'Cliente incorrecto';
-                }
-                break;
-            case 'readCart':
-                if ($pedido->setCliente($_SESSION['id_cliente'])) {
-                    if ($pedido->readOrder()) {
-                        if ($result['dataset'] = $pedido->readCart()) {
-                            $result['status'] = 1;
-                            $_SESSION['id_pedido'] = $pedido->getIdPedido();
-                        } else {
-                            if (Database::getException()) {
-                                $result['exception'] = Database::getException();
+                    //Si el cliente no posee una orden en proceso, entonces se crea una.
+                    if ($pedido->createOrder()) {
+                        if ($data = $pedido->checkOrder()) {
+                            //Se asignan los valores para hacer la inserción
+                            if ($pedido->setProducto($_POST['id_producto'])) {
+                                if ($pedido->setCantidad($_POST['cantidad_producto'])) {
+                                    if ($pedido->setPrecio($_POST['precio_producto'])) {
+                                        if ($pedido->setIdPedido($data['id_pedido'])) {
+                                            if ($pedido->noDuplicatedProducts()) {
+                                                $result['exception'] = 'El producto ya ha sido agregado al carrito en esta orden.';
+                                                break;
+                                            } else {
+                                                if ($pedido->updateStock($_POST['nuevo_stock'])) {
+                                                    if ($pedido->addToOrder()) {
+                                                        $result['status'] = 1;
+                                                        $result['message'] = 'Producto agregado al carrito correctamente.';
+                                                    } else {
+                                                        $result['exception'] = Database::getException();
+                                                    }
+                                                } else {
+                                                    $result['exception'] = Database::getException();
+                                                }
+                                            }
+                                            
+                                        } else {
+                                            $result['exception'] = 'Pedido invalido.';
+                                        }
+                                    } else {
+                                        $result['exception'] = 'Precio invalido.';
+                                    }
+                                } else {
+                                    $result['exception'] = 'Cantidad invalida.';
+                                }
                             } else {
-                                $result['exception'] = 'No tiene productos en el carrito';
-                            }
-                        }
-                    } else {
-                        $result['exception'] = 'Debe agregar un producto al carrito';
-                    }
-                } else {
-                    $result['exception'] = 'Cliente incorrecto';
-                }
-                break;
-            case 'updateDetail':
-                if ($pedido->setIdPedido($_SESSION['id_pedido'])) {
-                    $_POST = $pedido->validateForm($_POST);
-                    if ($pedido->setIdDetalle($_POST['id_detalle'])) {
-                        if ($pedido->setCantidad($_POST['cantidad_producto'])) {
-                            if ($pedido->updateDetail()) {
-                                $result['status'] = 1;
-                                $result['message'] = 'Cantidad modificada correctamente';
-                            } else {
-                                $result['exception'] = 'Ocurrió un problema al modificar la cantidad';
+                                $result['exception'] = 'Producto inexistente.';
                             }
                         } else {
-                            $result['exception'] = 'Cantidad incorrecta';
+                            $result['exception'] = 'Orden inexistente.';
                         }
                     } else {
-                        $result['exception'] = 'Detalle incorrecto';
+                        $result['exception'] = Database::getException();
                     }
-                } else {
-                    $result['exception'] = 'Pedido incorrecto';
-                }
-                break;
-            case 'deleteDetail':
-                if ($pedido->setIdPedido($_SESSION['id_pedido'])) {
-                    if ($pedido->setIdDetalle($_POST['id_detalle'])) {
-                        if ($pedido->deleteDetail()) {
-                            $result['status'] = 1;
-                            $result['message'] = 'Producto removido correctamente';
-                        } else {
-                            $result['exception'] = 'Ocurrió un problema al remover el producto';
-                        }
-                    } else {
-                        $result['exception'] = 'Detalle incorrecto';
-                    }
-                } else {
-                    $result['exception'] = 'Pedido incorrecto';
-                }
-                break;
-            case 'finishOrder':
-                if ($pedido->setIdPedido($_SESSION['id_pedido'])) {
-                    if ($pedido->finishOrder()) {
-                        $result['status'] = 1;
-                        $result['message'] = 'Pedido finalizado correctamente';
-                    } else {
-                        $result['exception'] = 'Ocurrió un problema al finalizar el pedido';
-                    }
-                } else {
-                    $result['exception'] = 'Pedido incorrecto';
                 }
                 break;
             default:
-                $result['exception'] = 'Acción no disponible dentro de la sesión';
+                $result['exception'] = 'Acción no disponible dentro de la sesión zzzz';
         }
     } else {
         // Se compara la acción a realizar cuando un cliente no ha iniciado sesión.

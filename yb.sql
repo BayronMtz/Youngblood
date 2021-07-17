@@ -486,3 +486,6 @@ ALTER TABLE ONLY public.pedidos
 ALTER TABLE productos ADD COLUMN cantidad NUMERIC;
 UPDATE productos SET cantidad = 10;
 
+--Cambios 16/7/2021
+ALTER TABLE detalle_pedido RENAME COLUMN precio_producto TO precio;
+

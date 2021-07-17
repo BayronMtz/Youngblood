@@ -36,6 +36,11 @@ function readOneProducto(id) {
                     // Se asignan los valores a los campos ocultos del formulario.
                     document.getElementById('id_producto').value = response.dataset.id_producto;
                     document.getElementById('precio_producto').value = response.dataset.precio_producto;
+
+                    if (response.dataset.cantidad == 0) {
+                        document.getElementById('shopping-form').className = 'hide';
+                        document.getElementById('disponiblelbl').className = '#';
+                    }
                 } else {
                     // Se presenta un mensaje de error cuando no existen datos para mostrar.
                     document.getElementById('title').innerHTML = `<i class="material-icons small">cloud_off</i><span class="red-text">${response.exception}</span>`;
@@ -56,29 +61,40 @@ document.getElementById('shopping-form').addEventListener('submit', function (ev
     // Se evita recargar la página web después de enviar el formulario.
     event.preventDefault();
 
-    fetch(API_PEDIDOS + 'createDetail', {
-        method: 'post',
-        body: new FormData(document.getElementById('shopping-form'))
-    }).then(function (request) {
-        // Se verifica si la petición es correcta, de lo contrario se muestra un mensaje indicando el problema.
-        if (request.ok) {
-            request.json().then(function (response) {
-                // Se comprueba si la respuesta es satisfactoria, de lo contrario se constata si el cliente ha iniciado sesión.
-                if (response.status) {
-                    sweetAlert(1, response.message, 'cart.php');
-                } else {
-                    // Se verifica si el cliente ha iniciado sesión para mostrar la excepción, de lo contrario se direcciona para que se autentique. 
-                    if (response.session) {
-                        sweetAlert(2, response.exception, null);
+    var cantidad = parseInt(document.getElementById('cantidad').textContent);
+
+    if (parseInt(document.getElementById('cantidad_producto').value) > cantidad) {
+        sweetAlert(2, 'Cantidad maxima superada, lo permitido es: '+cantidad,null);
+    } else {
+        var nueva_cantidad = parseInt(document.getElementById('cantidad').textContent) - parseInt(document.getElementById('cantidad_producto').value);
+        document.getElementById('nuevo_stock').value = nueva_cantidad;
+
+        fetch(API_PEDIDOS + 'createDetail', {
+            method: 'post',
+            body: new FormData(document.getElementById('shopping-form'))
+        }).then(function (request) {
+            // Se verifica si la petición es correcta, de lo contrario se muestra un mensaje indicando el problema.
+            if (request.ok) {
+                request.json().then(function (response) {
+                    // Se comprueba si la respuesta es satisfactoria, de lo contrario se constata si el cliente ha iniciado sesión.
+                    if (response.status) {
+                        sweetAlert(1, response.message, 'index.php');
                     } else {
-                        sweetAlert(3, response.exception, 'login.php');
+                        // Se verifica si el cliente ha iniciado sesión para mostrar la excepción, de lo contrario se direcciona para que se autentique. 
+                        if (response.session) {
+                            sweetAlert(2, response.exception, null);
+                        } else {
+                            sweetAlert(3, response.exception, 'login.php');
+                        }
                     }
-                }
-            });
-        } else {
-            console.log(request.status + ' ' + request.statusText);
-        }
-    }).catch(function (error) {
-        console.log(error);
-    });
+                });
+            } else {
+                console.log(request.status + ' ' + request.statusText);
+            }
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    
 });

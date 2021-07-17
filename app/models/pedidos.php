@@ -104,76 +104,61 @@ class Pedidos extends Validator
     /*
     *   Métodos para realizar las operaciones SCRUD (search, create, read, update, delete).
     */
-    // Método para verificar si existe un pedido pendiente del cliente para seguir comprando, de lo contrario crea uno.
-    public function readOrder()
-    {
-        $sql = 'SELECT id_pedido
-                FROM pedidos
-                WHERE estado_pedido = 0 AND id_cliente = ?';
-        $params = array($this->cliente);
-        if ($data = Database::getRow($sql, $params)) {
-            $this->id_pedido = $data['id_pedido'];
-            return true;
-        } else {
-            $sql = 'INSERT INTO pedidos(id_cliente)
-                    VALUES(?)';
-            $params = array($this->cliente);
-            // Se obtiene el ultimo valor insertado en la llave primaria de la tabla pedidos.
-            if ($this->id_pedido = Database::getLastRow($sql, $params)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
 
-    // Método para agregar un producto al carrito de compras.
-    public function createDetail()
+    //Metodo para cargar los productos del carrito.
+    public function readOrderInCart()
     {
-        $sql = 'INSERT INTO detalle_pedido(id_producto, precio_producto, cantidad_producto, id_pedido)
-                VALUES(?, ?, ?, ?)';
-        $params = array($this->producto, $this->precio, $this->cantidad, $this->id_pedido);
-        return Database::executeRow($sql, $params);
-    }
-
-    // Método para obtener los productos que se encuentran en el carrito de compras.
-    public function readCart()
-    {
-        $sql = 'SELECT id_detalle, nombre_producto, detalle_pedido.precio_producto, detalle_pedido.cantidad_producto
-                FROM pedidos INNER JOIN detalle_pedido USING(id_pedido) INNER JOIN productos USING(id_producto)
+        $sql = 'SELECT id_detalle, productos.nombre_producto, precio, cantidad_producto, 
+                (cantidad_producto*precio_producto) as subtotal 
+                FROM detalle_pedido 
+                INNER JOIN productos ON detalle_pedido.id_producto = productos.id_producto 
                 WHERE id_pedido = ?';
         $params = array($this->id_pedido);
         return Database::getRows($sql, $params);
     }
 
-    // Método para finalizar un pedido por parte del cliente.
-    public function finishOrder()
+    //Metodo para verificar si el cliente posee una orden en proceso.
+    public function checkOrder()
     {
-        date_default_timezone_set('America/El_Salvador');
-        $date = date('Y-m-d');
-        $sql = 'UPDATE pedidos
-                SET estado_pedido = ?, fecha_pedido = ?
-                WHERE id_pedido = ?';
-        $params = array(1, $date, $this->id_pedido);
+        $sql = 'SELECT*FROM pedidos 
+                WHERE id_cliente = ? 
+                AND estado_pedido = 0';
+        $params = array($_SESSION['id_cliente']);
+        return Database::getRow($sql, $params);
+    }
+
+    //Metodo para crear el pedido en proceso
+    public function createOrder()
+    {
+        $sql = 'INSERT INTO pedidos(id_cliente, estado_pedido, fecha_pedido) 
+                VALUES (?,0,current_date)';
+        $params = array($_SESSION['id_cliente']);
         return Database::executeRow($sql, $params);
     }
 
-    // Método para actualizar la cantidad de un producto agregado al carrito de compras.
-    public function updateDetail()
+    //Metodo para agregar productos al carrito.
+    public function addToOrder()
     {
-        $sql = 'UPDATE detalle_pedido
-                SET cantidad_producto = ?
-                WHERE id_pedido = ? AND id_detalle = ?';
-        $params = array($this->cantidad, $this->id_pedido, $this->id_detalle);
+        $sql = 'INSERT INTO detalle_pedido(id_producto, cantidad_producto, precio, id_pedido) 
+                VALUES (?,?,?,?)';
+        $params = array($this->producto, $this->cantidad, $this->precio, $this->id_pedido);
         return Database::executeRow($sql, $params);
     }
 
-    // Método para eliminar un producto que se encuentra en el carrito de compras.
-    public function deleteDetail()
+    //Metodo para evitar detalles duplicados.
+    public function noDuplicatedProducts()
     {
-        $sql = 'DELETE FROM detalle_pedido
-                WHERE id_pedido = ? AND id_detalle = ?';
-        $params = array($this->id_pedido, $this->id_detalle);
+        $sql = 'SELECT*FROM detalle_pedido WHERE id_producto = ? AND id_pedido = ?';
+        $params = array($this->producto, $this->id_pedido);
+        return Database::getRow($sql, $params);
+    }
+
+    //Metodo para restar el stock luego de agregar al carrito
+    public function updateStock($nueva_cantidad)
+    {
+        $sql = 'UPDATE productos SET cantidad = ? WHERE id_producto = ?';
+        $params = array($nueva_cantidad, $this->producto);
         return Database::executeRow($sql, $params);
     }
+    
 }
