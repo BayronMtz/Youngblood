@@ -148,7 +148,7 @@ class Categorias extends Validator
 
     public function readProductosCategoria()
     {
-        $sql = 'SELECT nombre_categoria, id_producto, imagen_producto, nombre_producto, descripcion_producto, precio_producto
+        $sql = 'SELECT nombre_categoria, id_producto, imagen_producto, nombre_producto, descripcion_producto, precio_producto, cantidad
                 FROM productos INNER JOIN categorias USING(id_categoria)
                 WHERE id_categoria = ? AND estado_producto = true
                 ORDER BY nombre_producto';

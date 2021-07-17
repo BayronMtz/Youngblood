@@ -21,6 +21,7 @@ Public_Page::headerTemplate('Detalles del producto');
                     <h3 id="nombre" class="header"></h3>
                     <p id="descripcion"></p>
                     <p>Precio (US$) <b id="precio"></b></p>
+                    <p>Disponible: <b id="cantidad"></b></p>
                 </div>
                 <div class="card-action">
                     <!-- Formulario para agregar el producto al carrito de compras -->

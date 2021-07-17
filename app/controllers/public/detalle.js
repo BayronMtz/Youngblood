@@ -32,6 +32,7 @@ function readOneProducto(id) {
                     document.getElementById('nombre').textContent = response.dataset.nombre_producto;
                     document.getElementById('descripcion').textContent = response.dataset.descripcion_producto;
                     document.getElementById('precio').textContent = response.dataset.precio_producto;
+                    document.getElementById('cantidad').textContent = response.dataset.cantidad;
                     // Se asignan los valores a los campos ocultos del formulario.
                     document.getElementById('id_producto').value = response.dataset.id_producto;
                     document.getElementById('precio_producto').value = response.dataset.precio_producto;
