@@ -27,14 +27,9 @@ Dashboard_Page::headerTemplate('Administrar pedidos');
     <!-- Cabeza de la tabla para mostrar los títulos de las columnas -->
     <thead>
         <tr>
-            <th>APELLIDOS</th>
-            <th>NOMBRES</th>
+            <th>CLIENTE</th>
             <th>ESTADO</th>
             <th>FECHA</th>
-            <th>PRODUCTO</th>
-            <th>CANTIDAD</th>
-            <th>PRECIO ($)</th>
-            <th>TOTAL ($)</th>
             <th class="actions-column">ACCIONES</th>
         </tr>
         <tr>
@@ -110,5 +105,5 @@ Dashboard_Page::headerTemplate('Administrar pedidos');
 
 <?php
 // Se imprime la plantilla del pie enviando el nombre del controlador para la página web.
-Dashboard_Page::footerTemplate('');
+Dashboard_Page::footerTemplate('pedidos.js');
 ?>

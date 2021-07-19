@@ -105,10 +105,19 @@ class Pedidos extends Validator
     *   Métodos para realizar las operaciones SCRUD (search, create, read, update, delete).
     */
 
+    //Metodo para cargar los pedidos en el dashboard
+    public function readAll()
+    {
+        $sql = 'SELECT CONCAT(clientes.nombres_cliente,\' \',clientes.apellidos_cliente) as cliente, estado_pedido, fecha_pedido 
+                FROM pedidos
+                INNER JOIN clientes ON pedidos.id_cliente = clientes.id_cliente';
+        $params = null;
+        return Database::getRows($sql, $params);
+    }
     //Metodo para cargar los productos del carrito.
     public function readOrderInCart()
     {
-        $sql = 'SELECT id_detalle, productos.nombre_producto, precio, cantidad_producto, 
+        $sql = 'SELECT id_detalle, productos.nombre_producto, productos.id_producto, precio, cantidad_producto, 
                 (cantidad_producto*precio_producto) as subtotal 
                 FROM detalle_pedido 
                 INNER JOIN productos ON detalle_pedido.id_producto = productos.id_producto 
@@ -160,5 +169,48 @@ class Pedidos extends Validator
         $params = array($nueva_cantidad, $this->producto);
         return Database::executeRow($sql, $params);
     }
+
+    //Metodo para eliminar productos del carrito
+    public function deleteFromCart($cantidad_eliminada)
+    {
+        $this->restoreStock($cantidad_eliminada);
+        $sql = 'DELETE FROM detalle_pedido WHERE id_detalle = ?';
+        $params = array($this->id_detalle);
+        return Database::executeRow($sql, $params);
+    }
+
+    //Metodo para actualizar stock despues de eliminar del carrito
+    public function restoreStock($cantidad_eliminada)
+    {
+        $sql = 'UPDATE productos SET cantidad = cantidad + ? WHERE id_producto = ?';
+        $params = array($cantidad_eliminada, $this->producto);
+        return Database::executeRow($sql, $params);
+    }
+
+    //Metodo para obtener la información de un producto
+    public function productInfo()
+    {
+        $sql = 'SELECT*FROM productos WHERE id_producto = ?';
+        $params = array($this->producto);
+        return Database::getRow($sql, $params);
+    }
+
+    //Metodo para actualizar la cantidad de un producto en un pedido
+    public function updateOnCart()
+    {
+        $sql = 'UPDATE detalle_pedido SET cantidad_producto = ? WHERE id_detalle = ?';
+        $params = array($this->cantidad, $this->id_detalle);
+        return Database::executeRow($sql, $params);
+    }
+
+    //Metodo para cambiar el estado del pedido a finalizado.
+    public function finishOrder()
+    {
+        $sql = 'UPDATE pedidos SET estado_pedido = 1 WHERE id_pedido = ?';
+        $params = array($this->id_pedido);
+        return Database::executeRow($sql, $params);
+    }
+
+
     
 }

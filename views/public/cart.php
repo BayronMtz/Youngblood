@@ -48,11 +48,19 @@ Public_Page::headerTemplate('Carrito de compras');
         <form method="post" id="item-form">
             <!-- Campo oculto para asignar el id del registro al momento de modificar -->
             <input type="number" id="id_detalle" name="id_detalle" class="hide"/>
+            <input type="number" id="id_producto" name="id_producto" class="hide"/>
             <div class="row">
+                <h5 class="center">Disponible: <span id="contadorStock"></span></h1>
                 <div class="input-field col s12 m4 offset-m4">
                     <i class="material-icons prefix">list</i>
                     <input type="number" id="cantidad_producto" name="cantidad_producto" min="1" class="validate" required/>
                     <label for="cantidad_producto">Cantidad</label>
+                </div>
+
+                <div class="input-field hide col s12 m4 offset-m4">
+                    <i class="material-icons prefix">list</i>
+                    <input type="text" id="cantidad_bodega" name="cantidad_bodega" min="1" class="validate"/>
+                    <label for="cantidad_bodega">Stock bodega:</label>
                 </div>
             </div>
             <div class="row center-align">

@@ -115,8 +115,77 @@ if (isset($_GET['action'])) {
                     }
                 }
                 break;
-            default:
-                $result['exception'] = 'Acción no disponible dentro de la sesión zzzz';
+            //Funcion para eliminar un producto del carrito
+            case 'deleteFromCart':
+                if ($pedido->setIdDetalle($_POST['id_detalle'])) {
+                    if ($pedido->setProducto($_POST['id_producto'])) {
+                        if ($pedido->deleteFromCart($_POST['cantidad_eliminada'])) {
+                            $result['status'] = 1;
+                            $result['message'] = 'Producto eliminado del carrito exitosamente.';
+                        } else {
+                            $result['exception'] = Database::getException();
+                        }
+                    } else {
+                        $result['exception'] = 'Id producto incorrecto';
+                    }
+                } else {
+                    $result['exception'] = 'Id incorrecto';
+                }
+                break;
+            //Funcion para obtener la información de un producto.
+            case 'productInfo':
+                if ($pedido->setProducto($_POST['id_producto'])) {
+                    if ($result['dataset'] = $pedido->productInfo()) {
+                        $result['status'] = 1;
+                    } else {
+                        $result['exception'] = Database::getException();
+                    }
+                } else {
+                    $result['exception'] = 'Id incorrecto';
+                }
+                break;
+            //Funcion para actualizar el stock de un producto en el carrito
+            case 'updateOnCart':
+                if ($pedido->setIdDetalle($_POST['id_detalle'])) {
+                    if ($pedido->setProducto($_POST['id_producto'])) {
+                        if ($pedido->setCantidad($_POST['cantidad_producto'])) {
+                            if ($pedido->updateStock($_POST['cantidad_bodega'])) {
+                                if ($pedido->updateOnCart()) {
+                                    $result['status'] = 1;
+                                    $result['message'] = 'Cantidad actualizada correctamente.';
+                                } else {
+                                    $result['exception'] = Database::getException();
+                                }
+                            } else {
+                                $result['exception'] = Database::getException();
+                            }
+                        } else {
+                            $result['exception'] = 'Cantidad invalida.';
+                        }
+                    } else {
+                        $result['exception'] = 'Id producto incorrecto';
+                    }
+                } else {
+                    $result['exception'] = 'Id detalle incorrecto';
+                }
+                break;
+            //Caso para finalizar el pedido y mandarlo a administración.
+            case 'finishOrder':
+                if ($data = $pedido->checkOrder()) {
+                    if ($pedido->setIdPedido($data['id_pedido'])) {
+                        if ($pedido->finishOrder()) {
+                            $result['status'] = 1;
+                            $result['message'] = 'Orden finalizada correctamente.';
+                        } else {
+                            $result['exception'] = Database::getException();
+                        }
+                    } else {
+                        $result['exception'] = 'Id incorrecto';
+                    }
+                } else {
+                    $result['exception'] = 'Orden no encontrada';
+                }
+                break;
         }
     } else {
         // Se compara la acción a realizar cuando un cliente no ha iniciado sesión.
