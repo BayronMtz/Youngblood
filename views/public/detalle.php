@@ -8,7 +8,7 @@ Public_Page::headerTemplate('Detalles del producto');
 <!-- Contenedor para mostrar el detalle del producto seleccionado previamente -->
 <div class="container">
     <!-- Título del contenido principal -->
-    <h4 class="center indigo-text" id="title">Detalles del producto</h4>
+    <h3 class="center indigo-text" id="title">Detalles del producto</h3>
     <div class="row" id="detalle">
         <!-- Componente Horizontal Card para mostrar el detalle de un producto -->
         <div class="card horizontal">
@@ -18,13 +18,12 @@ Public_Page::headerTemplate('Detalles del producto');
             </div>
             <div class="card-stacked">
                 <div class="card-content">
-                    <h3 id="nombre" class="header"></h3>
+                    <h4 id="nombre" class="header"></h4>
                     <p id="descripcion"></p>
                     <p>Precio (US$) <b id="precio"></b></p>
                     <p>Disponible: <b id="cantidad"></b></p>
                 </div>
-                <br>
-                
+    
                 <div class="card-action">
                     <!-- Formulario para agregar el producto al carrito de compras -->
                     <form method="post" id="shopping-form">
