@@ -22,8 +22,9 @@ Public_Page::headerTemplate('Detalles del producto');
                     <p id="descripcion"></p>
                     <p>Precio (US$) <b id="precio"></b></p>
                     <p>Disponible: <b id="cantidad"></b></p>
-                    <p>Deja un comentario de esta prenda:</p>
                 </div>
+                <br>
+                
                 <div class="card-action">
                     <!-- Formulario para agregar el producto al carrito de compras -->
                     <form method="post" id="shopping-form">
@@ -39,7 +40,22 @@ Public_Page::headerTemplate('Detalles del producto');
                             </div>
                             <div class="input-field col s12 m6">
                                 <button type="submit" class="btn waves-effect waves-light blue tooltipped" data-tooltip="Agregar al carrito"><i class="material-icons">add_shopping_cart</i></button>
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12 m6">
+                                <i class="material-icons prefix">star</i>
+                                <input type="number" id="calificacion" name="calificacion" min="1" max="5"class="validate" required/>
+                                <label for="">Calificación de la prenda</label>
                             </div>
+                            <div class="input-field col s12 m6">
+                                <i class="material-icons prefix">edit</i>
+                                <input type="text" id="calificacion" name="calificacion" class="validate" required/>
+                                <label for="">Deja un comentario:</label>
+                            </div>
+                            <div class="input-field col s12 m6">
+                                <button type="submit" class="btn waves-effect teal accent-4 tooltipped" data-tooltip="Enviar mi valoración"><i class="material-icons">send</i></button>
+                            </div> 
                         </div>
                     </form>
                     <h1 id="disponiblelbl" class="hide">No disponible</h1>
