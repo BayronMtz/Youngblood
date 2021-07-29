@@ -19,7 +19,7 @@ Dashboard_Page::headerTemplate('Administrar pedidos');
     </form>
     <div class="input-field center-align col s12 m4">
         <!-- Enlace para abrir la caja de dialogo (modal) al momento de crear un nuevo registro -->
-        <a href="#" onclick="openCreateDialog()" class="btn waves-effect indigo tooltipped" data-tooltip="Crear"><i class="material-icons">add_circle</i></a>
+        <a href="#" onclick="openCreateDialog()" class="btn waves-effect amber tooltipped" data-tooltip="Reporte de pedidos"><i class="material-icons">assignment</i></a>
     </div>
 </div>
 
