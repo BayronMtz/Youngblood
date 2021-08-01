@@ -27,7 +27,8 @@ Public_Page::headerTemplate('Carrito de compras');
     </table>
     <!-- Fila para mostrar el monto total a pagar -->
     <div class="row right-align">
-        <p>TOTAL A PAGAR (US$) <b id="pago"></b></p>
+        <p>TOTAL A PAGAR: <span class="blue-text" id="lblTotal">$0.00</span></p>
+        
     </div>
     <!-- Fila para mostrar un botón que finaliza el pedido -->
     <div class="row right-align">

@@ -2,6 +2,7 @@ const API_PEDIDOS = '../../app/api/public/pedidos.php?action=';
 
 document.addEventListener('DOMContentLoaded',function(){
     readOrderInCart();
+    getTotalPrice();
 });
 
 function readOrderInCart(){
@@ -20,6 +21,30 @@ function readOrderInCart(){
                     let content = '';
                     // Se agregan las filas al cuerpo de la tabla mediante su id para mostrar los registros.
                     document.getElementById('tbody-rows').innerHTML = content;
+                }
+            });
+        } else {
+            console.log(request.status + ' ' + request.statusText);
+        }
+    }).catch(function (error) {
+        console.log(error);
+    });
+}
+
+//Funcion para obtener el total de un pedido en proceso
+function getTotalPrice(){
+    fetch(API_PEDIDOS + 'getTotalPrice', {
+        method: 'get'
+    }).then(function (request) {
+        // Se verifica si la petición es correcta, de lo contrario se muestra un mensaje indicando el problema.
+        if (request.ok) {
+            request.json().then(function (response) {
+                // Se comprueba si la respuesta es satisfactoria, de lo contrario se muestra un mensaje con la excepción.
+                if (response.status) {
+                    // Se colocan los datos en la tarjeta de acuerdo al producto seleccionado previamente.
+                    document.getElementById('lblTotal').textContent = '$' + response.dataset.totalpedido;
+                } else {
+                    // No se muestra nada
                 }
             });
         } else {

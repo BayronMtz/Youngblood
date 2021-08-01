@@ -110,7 +110,8 @@ class Pedidos extends Validator
     {
         $sql = 'SELECT CONCAT(clientes.nombres_cliente,\' \',clientes.apellidos_cliente) as cliente, estado_pedido, fecha_pedido 
                 FROM pedidos
-                INNER JOIN clientes ON pedidos.id_cliente = clientes.id_cliente';
+                INNER JOIN clientes ON pedidos.id_cliente = clientes.id_cliente
+                WHERE estado_pedido NOT IN (0)';
         $params = null;
         return Database::getRows($sql, $params);
     }
@@ -201,6 +202,16 @@ class Pedidos extends Validator
         $sql = 'UPDATE detalle_pedido SET cantidad_producto = ? WHERE id_detalle = ?';
         $params = array($this->cantidad, $this->id_detalle);
         return Database::executeRow($sql, $params);
+    }
+
+    //Metodo para obtener el total de los productos
+    public function getTotalPrice()
+    {
+        $sql = 'SELECT SUM(precio*cantidad_producto) as totalPedido 
+                FROM detalle_pedido 
+                WHERE id_pedido = ?';
+        $params = array($this->id_pedido);
+        return Database::getRow($sql, $params);
     }
 
     //Metodo para cambiar el estado del pedido a finalizado.

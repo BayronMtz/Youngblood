@@ -29,7 +29,7 @@ function fillTable(dataset) {
                 <td>${estado}</td>
                 <td>${row.fecha_pedido}</td>
                 <td>
-                    <a href="#" onclick="openUpdateDialog(${row.id_cliente})" class="btn waves-effect blue tooltipped" data-tooltip="Actualizar"><i class="material-icons">mode_edit</i></a>
+                    <a href="#" onclick="openUpdateDialog(${row.id_cliente})" class="btn waves-effect indigo tooltipped" data-tooltip="Ver pedido"><i class="material-icons">info</i></a>
                     <a href="#" onclick="openDeleteDialog(${row.id_cliente})" class="btn waves-effect red tooltipped" data-tooltip="Eliminar"><i class="material-icons">delete</i></a>
                 </td>
             </tr>

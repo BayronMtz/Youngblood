@@ -186,6 +186,23 @@ if (isset($_GET['action'])) {
                     $result['exception'] = 'Orden no encontrada';
                 }
                 break;
+            //Caso para obtener el precio total de un pedido
+            case 'getTotalPrice':
+                if ($data = $pedido->checkOrder()) {
+                    if ($pedido->setIdPedido($data['id_pedido'])) {
+                        if ($result['dataset'] = $pedido->getTotalPrice()) {
+                            $result['status'] = 1;
+                            $result['message'] = 'total';
+                        } else {
+                            $result['exception'] = Database::getException();
+                        }
+                    } else {
+                        $result['exception'] = 'Id incorrecto';
+                    }
+                } else {
+                    $result['exception'] = 'Orden no encontrada';
+                }
+                break;
         }
     } else {
         // Se compara la acción a realizar cuando un cliente no ha iniciado sesión.
