@@ -105,6 +105,35 @@ class Pedidos extends Validator
     *   Métodos para realizar las operaciones SCRUD (search, create, read, update, delete).
     */
 
+    //Metodo para cargar los pedidos de un cliente
+    public function readAllOnPublic()
+    {
+        $sql = 'SELECT*FROM pedidos 
+                WHERE id_cliente = ? 
+                AND estado_pedido NOT IN (0)';
+        $params = array($_SESSION['id_cliente']);
+        return Database::getRows($sql, $params);
+    }
+
+    //Metodo para cargar productos de un pedido
+    public function readProductsOfOrder()
+    {
+        $sql = 'SELECT productos.nombre_producto, cantidad_producto, (cantidad_producto*precio) as subtotal, precio
+                FROM detalle_pedido 
+                INNER JOIN productos USING (id_producto) 
+                WHERE id_pedido = ?';
+        $params = array($this->id_pedido);
+        return Database::getRows($sql, $params);
+    }
+
+    //Metodo para cambiar el estado de un pedido a anulado por parte del cliente
+    public function cancelOrder()
+    {
+        $sql = 'UPDATE pedidos SET estado_pedido = 3 WHERE id_pedido = ?';
+        $params = array($this->id_pedido);
+        return Database::executeRow($sql, $params);
+    }
+
     //Metodo para cargar los pedidos en el dashboard
     public function readAll()
     {

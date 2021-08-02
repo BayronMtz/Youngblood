@@ -47,6 +47,7 @@ class Public_Page
                                         <li><a href="index.php"><i class="material-icons left">view_module</i>Catálogo</a></li>
                                         <li><a href="index.php"><i class="material-icons left">search</i>Buscar producto</a></li>
                                         <li><a href="cart.php"><i class="material-icons left">shopping_cart</i>Carrito</a></li>
+                                        <li><a href="pedidos.php"><i class="material-icons left">event_note</i>Mis Pedidos</a></li>
                                         <li><a href="#" onclick="logOut()"><i class="material-icons left">close</i>Cerrar sesión</a></li>
                                     </ul>
                                 </div>
@@ -56,6 +57,7 @@ class Public_Page
                             <li><a href="index.php"><i class="material-icons left">view_module</i>Catálogo</a></li>
                             <li><a href="index.php"><i class="material-icons left">search</i>Buscar producto</a></li>
                             <li><a href="cart.php"><i class="material-icons left">shopping_cart</i>Carrito</a></li>
+                            <li><a href="pedidos.php"><i class="material-icons left">event_note</i>Mis Pedidos</a></li>
                             <li><a href="#" onclick="logOut()"><i class="material-icons left">close</i>Cerrar sesión</a></li>
                         </ul>
                     </header>

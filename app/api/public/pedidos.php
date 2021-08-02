@@ -16,7 +16,19 @@ if (isset($_GET['action'])) {
         $result['session'] = 1;
         // Se compara la acción a realizar cuando un cliente ha iniciado sesión.
         switch ($_GET['action']) {
-                //Cargar productos en el carrito
+            //Cargar productos de un pedido
+            case 'readProductsOfOrder':
+                if ($pedido->setIdPedido($_POST['id_pedido'])) {
+                    if ($result['dataset'] = $pedido->readProductsOfOrder()) {
+                        $result['status'] = 1;
+                    } else {
+                        $result['exception'] = Database::getException();
+                    }
+                } else {
+                    $result['exception'] = 'Id incorrecto';
+                }
+                break;
+            //Cargar productos en el carrito
             case 'readOrderInCart':
                 if ($data = $pedido->checkOrder()) {
                     if ($pedido->setIdPedido($data['id_pedido'])) {
@@ -201,6 +213,32 @@ if (isset($_GET['action'])) {
                     }
                 } else {
                     $result['exception'] = 'Orden no encontrada';
+                }
+                break;
+            //Caso para que el cliente pueda anular un pedido
+            case 'cancelOrder':
+                if ($pedido->setIdPedido($_POST['id_pedido'])) {
+                    if ($pedido->cancelOrder()) {
+                        $result['status'] = 1;
+                        $result['message'] = 'Pedido anulado correctamente.';
+                    } else {
+                        $result['exception'] = Database::getException();
+                    }
+                } else {
+                    $result['exception'] = 'Id incorrecto';
+                }
+                break;
+            //Caso para ver los pedidos en la vista del cliente
+            case 'checkOrders':
+                if ($result['dataset'] = $pedido->readAllOnPublic()) {
+                    $result['status'] = 1;
+                    $result['message'] = 'Pedidos obtenidos exitosamente';
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        $result['exception'] = 'Usted no posee pedidos.';
+                    }
                 }
                 break;
         }
