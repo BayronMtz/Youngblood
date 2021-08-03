@@ -134,16 +134,36 @@ class Pedidos extends Validator
         return Database::executeRow($sql, $params);
     }
 
+    //Metodo para cambiar el estado de un pedido a entregado
+    public function giveOrder()
+    {
+        $sql = 'UPDATE pedidos SET estado_pedido = 2 WHERE id_pedido = ?';
+        $params = array($this->id_pedido);
+        return Database::executeRow($sql, $params);
+    }
+
     //Metodo para cargar los pedidos en el dashboard
     public function readAll()
     {
-        $sql = 'SELECT CONCAT(clientes.nombres_cliente,\' \',clientes.apellidos_cliente) as cliente, estado_pedido, fecha_pedido 
+        $sql = 'SELECT id_pedido, CONCAT(clientes.nombres_cliente,\' \',clientes.apellidos_cliente) as cliente, estado_pedido, CAST(fecha_pedido AS TEXT) 
                 FROM pedidos
                 INNER JOIN clientes ON pedidos.id_cliente = clientes.id_cliente
                 WHERE estado_pedido NOT IN (0)';
         $params = null;
         return Database::getRows($sql, $params);
     }
+
+    //Metodo para hacer busquedas
+    public function searchRows($value)
+    {
+        $sql = 'SELECT id_pedido, CONCAT(clientes.nombres_cliente,\' \',clientes.apellidos_cliente) as cliente, estado_pedido, CAST(fecha_pedido AS TEXT) 
+                FROM pedidos
+                INNER JOIN clientes ON pedidos.id_cliente = clientes.id_cliente
+                WHERE clientes.nombres_cliente ILIKE ? OR clientes.apellidos_cliente ILIKE ? OR CAST(fecha_pedido AS TEXT)  ILIKE ? AND estado_pedido NOT IN (0)';
+        $params = array("%$value%", "%$value%", "%$value%");
+        return Database::getRows($sql, $params);
+    }
+
     //Metodo para cargar los productos del carrito.
     public function readOrderInCart()
     {

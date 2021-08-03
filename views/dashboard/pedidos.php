@@ -15,6 +15,7 @@ Dashboard_Page::headerTemplate('Administrar pedidos');
         </div>
         <div class="input-field col s6 m4">
             <button type="submit" class="btn waves-effect green tooltipped" data-tooltip="Buscar"><i class="material-icons">check_circle</i></button>
+            <button type="button" id="btnReiniciar" class="btn waves-effect blue tooltipped" data-tooltip="Reiniciar búsqueda"><i class="material-icons">replay</i></button>
         </div>
     </form>
     <div class="input-field center-align col s12 m4">
@@ -98,6 +99,42 @@ Dashboard_Page::headerTemplate('Administrar pedidos');
             <div class="row center-align">
                 <a href="#" class="btn waves-effect grey tooltipped modal-close" data-tooltip="Cancelar"><i class="material-icons">cancel</i></a>
                 <button type="submit" class="btn waves-effect blue tooltipped" data-tooltip="Guardar"><i class="material-icons">save</i></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Componente Modal para mostrar una caja de dialogo -->
+<div id="order-modal" class="modal">
+    <div class="modal-content">
+        <!-- Título para la caja de dialogo -->
+        <h4 class="center-align">Información del Pedido</h4>
+        <!-- Formulario para cambiar la cantidad de producto -->
+        <p style="text-align: center;">Cliente: <b id="lblCliente"></b></p>
+        <p style="text-align: center;">Estado: <b id="lblEstado"></b></p>
+        <p style="text-align: center;">Fecha: <b id="lblFecha"></b></p>
+
+        <form method="post" id="order-form">
+            <!-- Campo oculto para asignar el id del registro al momento de modificar -->
+            <input type="number" id="id_pedido" name="id_pedido" class="hide"/>
+            <table class="striped">
+                <!-- Cabeza de la tabla para mostrar los títulos de las columnas -->
+                <thead>
+                    <tr>
+                        <th>PRODUCTO</th>
+                        <th>PRECIO (US$)</th>
+                        <th>CANTIDAD</th>
+                        <th>SUBTOTAL (US$)</th>
+                    </tr>
+                </thead>
+                <!-- Cuerpo de la tabla para mostrar un registro por fila -->
+                <tbody id="tbody-rows2">
+                </tbody>
+            </table>
+            <p style="text-align: center;">Total: <b id="lblTotal"></b></p>
+            <div class="row center-align" style="margin-top: 30px;">
+                <a href="#" class="btn waves-effect grey tooltipped modal-close" data-tooltip="Cancelar"><i class="material-icons">cancel</i></a>
+                <button id="btnEntregar" class="btn waves-effect green tooltipped" data-tooltip="Reportar como entregado"><i class="material-icons">check</i></button>
             </div>
         </form>
     </div>

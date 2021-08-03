@@ -48,6 +48,7 @@ Public_Page::headerTemplate('Mis Pedidos');
                 <tbody id="tbody-rows2">
                 </tbody>
             </table>
+            <p style="text-align: center;">Total: <b id="lblTotal"></b></p>
             <div class="row center-align" style="margin-top: 30px;">
                 <a href="#" class="btn waves-effect grey tooltipped modal-close" data-tooltip="Cancelar"><i class="material-icons">cancel</i></a>
                 <button type="submit" id="btnCancelar" class="btn waves-effect red tooltipped" data-tooltip="Cancelar Pedido"><i class="material-icons">delete_forever</i></button>

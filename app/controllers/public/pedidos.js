@@ -128,6 +128,16 @@ function fillProducts(dataset) {
             </tr>
         `;
     });
+
+    let total = 0;
+    // Se recorre el conjunto de registros (dataset) fila por fila a través del objeto row.
+    dataset.map(function (row) {
+        // Se crean y concatenan las filas de la tabla con los datos de cada registro.
+        total += parseFloat(row.precio) * parseFloat(row.cantidad_producto);
+    });
+
+    document.getElementById('lblTotal').textContent = '$'+total;
+
     // Se agregan las filas al cuerpo de la tabla mediante su id para mostrar los registros.
     document.getElementById('tbody-rows2').innerHTML = content;
    

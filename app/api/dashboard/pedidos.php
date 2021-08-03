@@ -15,6 +15,7 @@ if (isset($_GET['action'])) {
     if (isset($_SESSION['id_usuario'])) {
         // Se compara la acción a realizar cuando un administrador ha iniciado sesión.
         switch ($_GET['action']) {
+            //Caso para leer pedidos en el dashboard
             case 'readAll':
                 if ($result['dataset'] = $pedidos->readAll()) {
                     $result['status'] = 1;
@@ -24,6 +25,55 @@ if (isset($_GET['action'])) {
                     } else {
                         $result['exception'] = 'No hay clientes registrados';
                     }
+                }
+                break;
+            //Caso para ver productos de un pedido en el dashboard
+            case 'readProductsOfOrder':
+                if ($pedidos->setIdPedido($_POST['id_pedido'])) {
+                    if ($result['dataset'] = $pedidos->readProductsOfOrder()) {
+                        $result['status'] = 1;
+                    } else {
+                        $result['exception'] = Database::getException();
+                    }
+                } else {
+                    $result['exception'] = 'Id incorrecto';
+                }
+                break;
+            //Caso para reportar un pedido como entregado
+            case 'giveOrder':
+                if ($pedidos->setIdPedido($_POST['id_pedido'])) {
+                    if ($pedidos->giveOrder()) {
+                        $result['status'] = 1;
+                        $result['message'] = 'Orden entregada correctamente.';
+                    } else {
+                        $result['exception'] = Database::getException();
+                    }
+                } else {
+                    $result['exception'] = 'Id incorrecto';
+                }
+
+                break;
+            //Caso para realizar busquedas
+            case 'search':
+                $_POST = $pedidos->validateForm($_POST);
+                if ($_POST['search'] != '') {
+                    if ($result['dataset'] = $pedidos->searchRows($_POST['search'])) {
+                        $result['status'] = 1;
+                        $rows = count($result['dataset']);
+                        if ($rows > 1) {
+                            $result['message'] = 'Se encontraron ' . $rows . ' coincidencias';
+                        } else {
+                            $result['message'] = 'Solo existe una coincidencia';
+                        }
+                    } else {
+                        if (Database::getException()) {
+                            $result['exception'] = Database::getException();
+                        } else {
+                            $result['exception'] = 'No hay coincidencias';
+                        }
+                    }
+                } else {
+                    $result['exception'] = 'Ingrese un valor para buscar';
                 }
                 break;
         }
