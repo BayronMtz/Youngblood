@@ -1,5 +1,6 @@
 // Constante para establecer la ruta y parámetros de comunicación con la API.
 const API_CATALOGO = '../../app/api/public/catalogo.php?action=';
+const ENDPOINT_SCORE = '../../app/api/public/catalogo.php?action=readScores';
 const API_PEDIDOS = '../../app/api/public/pedidos.php?action=';
 
 // Método manejador de eventos que se ejecuta cuando el documento ha cargado.
@@ -10,7 +11,73 @@ document.addEventListener('DOMContentLoaded', function () {
     const ID = params.get('id');
     // Se llama a la función que muestra el detalle del producto seleccionado previamente.
     readOneProducto(ID);
+    document.getElementById('id_producto2').value = ID;
+
+    fillSelect(ENDPOINT_SCORE, 'cb_puntuacion', null);
+
+    showReviews();
+
+    M.updateTextFields();
+
 });
+
+//Funcion para cargar las valoraciones
+function showReviews(){
+    // Se busca en la URL las variables (parámetros) disponibles.
+    let params = new URLSearchParams(location.search);
+    // Se obtienen los datos localizados por medio de las variables.
+    const ID = params.get('id');
+    // Se define un objeto con los datos del registro seleccionado.
+    const data = new FormData();
+    data.append('id_producto', ID);
+
+    fetch(API_CATALOGO + 'showReviews', {
+        method: 'post',
+        body: data
+    }).then(function (request) {
+        // Se verifica si la petición es correcta, de lo contrario se muestra un mensaje indicando el problema.
+        if (request.ok) {
+            request.json().then(function (response) {
+                // Se comprueba si la respuesta es satisfactoria, de lo contrario se muestra un mensaje con la excepción.
+                let data = [];
+                if (response.status) {
+                    // Se colocan los datos en la tarjeta de acuerdo al comentario seleccionado previamente.
+                    data = response.dataset;
+                } else {
+                    // Se presenta un mensaje de error cuando no existen datos para mostrar.
+                    document.getElementById('title2').innerHTML = `<i class="material-icons small">cloud_off</i><span class="red-text">${response.exception}</span>`;
+                }
+                fillReviews(data);
+            });
+        } else {
+            console.log(request.status + ' ' + request.statusText);
+        }
+    }).catch(function (error) {
+        console.log(error);
+    });
+}
+
+function fillReviews(dataset) {
+    let content = '';
+    // Se recorre el conjunto de registros (dataset) fila por fila a través del objeto row.
+    dataset.map(function (row) {
+        // Se crean y concatenan las filas de la tabla con los datos de cada registro.
+        content += `
+            <div class="col s12 m6">
+                <div class="card white-grey darken-1">
+                    <div class="card-content dark-text">
+                        <span class="card-title">${row.cliente}</span>
+                        <p>${row.puntuacion}</p>
+                        <p>${row.fecha}</p>
+                        <p style="margin-top: 10px;">${row.valoracion}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    // Se agregan las filas al cuerpo de la tabla mediante su id para mostrar los registros.
+    document.getElementById('row-body').innerHTML = content;
+}
 
 // Función para obtener y mostrar los datos del producto seleccionado.
 function readOneProducto(id) {
@@ -95,6 +162,32 @@ document.getElementById('shopping-form').addEventListener('submit', function (ev
             console.log(error);
         });
     }
-
-    
 });
+
+//Al ejecutar el evento submit del formulario de valoraciones
+document.getElementById('valoraciones-form').addEventListener('submit',function(event){
+    //Se evita recargar la pagina
+    event.preventDefault();
+
+    fetch(API_CATALOGO + 'createRatings', {
+        method: 'post',
+        body: new FormData(document.getElementById('valoraciones-form'))
+    }).then(function (request) {
+        // Se verifica si la petición es correcta, de lo contrario se muestra un mensaje indicando el problema.
+        if (request.ok) {
+            request.json().then(function (response) {
+                // Se comprueba si la respuesta es satisfactoria, de lo contrario se muestra un mensaje con la excepción.
+                if (response.status) {
+                    sweetAlert(1, response.message, null);
+                } else {
+                    sweetAlert(2, response.exception, null);
+                }
+            });
+        } else {
+            console.log(request.status + ' ' + request.statusText);
+        }
+    }).catch(function (error) {
+        console.log(error);
+    });
+
+})

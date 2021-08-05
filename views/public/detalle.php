@@ -52,18 +52,20 @@ Public_Page::headerTemplate('Detalles del producto');
 
 <!--Contenedor de las valoraciones-->
 <div class="container">
-    <h3 class="center indigo-text" id="title">Deja tu valoración</h3>
+    <h3 class="center indigo-text">Deja tu valoración</h3>
     <div class="row">
-        <form>
+        <form method="post" id="valoraciones-form">
+            <input type="text" class="hide" id="id_producto2" name="id_producto2">
             <div class="input-field col s12 m6">
                 <i class="material-icons prefix">star</i>
-                <input type="number" id="calificacion" name="calificacion" min="1" max="5"class="validate" required/>
-                <label for="">Calificación de la prenda</label>
+                <select id="cb_puntuacion" name="cb_puntuacion">
+                </select>
+                <label>Puntuación</label>
             </div>
             <div class="input-field col s12 m6">
                 <i class="material-icons prefix">edit</i>
-                <input type="text" id="calificacion" name="calificacion" class="validate" required/>
-                <label for="">Deja un comentario:</label>
+                <input id="valoracion_producto" type="text" name="valoracion_producto" class="validate" required/>
+                <label for="valoracion_producto">Comentario</label>
             </div>
             <div class="row center-align">
                 <div class="col s12">
@@ -71,6 +73,14 @@ Public_Page::headerTemplate('Detalles del producto');
                 </div>
             </div>
         </form>
+    </div>
+</div>
+
+<!--Contenedor de comentarios -->
+<div class="container">
+    <h3 class="center indigo-text" id="title2">Valoraciones hechas por los clientes</h3>
+    <div class="row" id="row-body">
+        
     </div>
 </div>
 

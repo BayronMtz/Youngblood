@@ -489,3 +489,30 @@ UPDATE productos SET cantidad = 10;
 --Cambios 16/7/2021
 ALTER TABLE detalle_pedido RENAME COLUMN precio_producto TO precio;
 
+--Cambios 04/08/2021
+CREATE TABLE puntuaciones(
+	id_puntuacion SERIAL NOT NULL PRIMARY KEY,
+	puntuacion VARCHAR(15) NOT NULL
+);
+
+CREATE TABLE valoraciones(
+	id_valoracion SERIAL NOT NULL PRIMARY KEY,
+	id_cliente INTEGER NOT NULL REFERENCES clientes(id_cliente),
+	valoracion VARCHAR(200) NOT NULL,
+	fecha DATE NOT NULL,
+	id_puntuacion INTEGER NOT NULL REFERENCES puntuaciones(id_puntuacion)
+);
+
+ALTER TABLE valoraciones ADD COLUMN id_producto INTEGER NOT NULL REFERENCES productos(id_producto);
+
+INSERT INTO puntuaciones (puntuacion) VALUES ('★'),('★★'),('★★★'),('★★★★'),('★★★★★');
+
+INSERT INTO valoraciones(id_cliente, valoracion, fecha, id_puntuacion, id_producto) 
+VALUES (2, 'Buenos productos', '2021-06-09', 5, 1);
+
+ALTER TABLE valoraciones ADD COLUMN visibilidad INTEGER;
+
+UPDATE valoraciones SET visibilidad = 0;
+
+
+
