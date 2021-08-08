@@ -514,5 +514,9 @@ ALTER TABLE valoraciones ADD COLUMN visibilidad INTEGER;
 
 UPDATE valoraciones SET visibilidad = 0;
 
+--Cambios 7/8/2021
+ALTER TABLE clientes ADD COLUMN fecha_registro DATE;
+UPDATE clientes SET fecha_registro = current_date;
+
 
 

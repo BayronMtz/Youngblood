@@ -175,6 +175,32 @@ class Clientes extends Validator
     /*
     *   Métodos para gestionar la cuenta del cliente.
     */
+
+    //Consulta para grafica de clientes registrados en el ultimo semestre por mes
+    public function clienteMes()
+    {
+        $sql = 'SELECT COUNT(id_cliente) as cantidad, EXTRACT(MONTH FROM fecha_registro) as mes FROM clientes
+                GROUP BY mes ORDER BY mes ASC LIMIT 6';
+        $params = null;
+        return Database::getRows($sql, $params);
+    }
+
+    //Consulta para obtener a los menores de edad (Personas nacidas despues del 2004-01-01)
+    public function menoresEdad()
+    {
+        $sql = 'SELECT COUNT(id_cliente) as menoresEdad FROM clientes WHERE nacimiento_cliente > \'2004-01-01\'';
+        $params = null;
+        return Database::getRow($sql, $params);
+    }
+
+    //Consulta para obtener a los mayores de edad (Personas nacidas antes del 2003-12-31)
+    public function mayoresEdad()
+    {
+        $sql = 'SELECT COUNT(id_cliente) as mayoresEdad FROM clientes WHERE nacimiento_cliente < \'2003-12-31\'';
+        $params = null;
+        return Database::getRow($sql, $params);
+    }
+
     public function checkUser($correo)
     {
         $sql = 'SELECT id_cliente, estado_cliente FROM clientes WHERE correo_cliente = ?';
@@ -244,8 +270,8 @@ class Clientes extends Validator
     {
         // Se encripta la clave por medio del algoritmo bcrypt que genera un string de 60 caracteres.
         $hash = password_hash($this->clave, PASSWORD_DEFAULT);
-        $sql = 'INSERT INTO clientes(nombres_cliente, apellidos_cliente, correo_cliente, dui_cliente, telefono_cliente, nacimiento_cliente, direccion_cliente, clave_cliente)
-                VALUES(?, ?, ?, ?, ?, ?, ?, ?)';
+        $sql = 'INSERT INTO clientes(nombres_cliente, apellidos_cliente, correo_cliente, dui_cliente, telefono_cliente, nacimiento_cliente, direccion_cliente, clave_cliente, fecha_registro)
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?, current_date)';
         $params = array($this->nombres, $this->apellidos, $this->correo, $this->dui, $this->telefono, $this->nacimiento, $this->direccion, $hash);
         return Database::executeRow($sql, $params);
     }

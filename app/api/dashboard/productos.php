@@ -26,6 +26,30 @@ if (isset($_GET['action'])) {
                     }
                 }
                 break;
+            //Top productos mas vendidos
+            case 'topProducts':
+                if ($result['dataset'] = $producto->topProducts()) {
+                    $result['status'] = 1;
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        $result['exception'] = 'No hay productos registrados';
+                    }
+                }
+                break;
+            //Productos vendidos en los ultimos meses
+            case 'productosVendidos':
+                if ($result['dataset'] = $producto->productosVendidos()) {
+                    $result['status'] = 1;
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        $result['exception'] = 'No hay productos vendidos';
+                    }
+                }
+                break;
             case 'search':
                 $_POST = $producto->validateForm($_POST);
                 if ($_POST['search'] != '') {

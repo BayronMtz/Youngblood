@@ -126,6 +126,16 @@ class Pedidos extends Validator
         return Database::getRows($sql, $params);
     }
 
+    //Metodo para saber el porcentaje de pedidos por estado
+    public function pedidosEstado()
+    {
+        $sql = 'SELECT estado_pedido, (COUNT(id_pedido)*100) / (SELECT COUNT(id_pedido) FROM pedidos) as porcentaje
+                FROM pedidos 
+                GROUP BY estado_pedido';
+        $params = null;
+        return Database::getRows($sql, $params);
+    }
+
     //Metodo para cambiar el estado de un pedido a anulado por parte del cliente
     public function cancelOrder()
     {

@@ -159,6 +159,29 @@ class Productos extends Validator
         return Database::getRows($sql, $params);
     }
 
+    //Productos mas vendidos
+    public function topProducts()
+    {
+        $sql = 'SELECT productos.nombre_producto, sum(cantidad_producto) as cantidad 
+                FROM detalle_pedido 
+                INNER JOIN productos USING(id_producto) 
+                GROUP BY productos.nombre_producto 
+                ORDER BY cantidad DESC LIMIT 5';
+        $params = null;
+        return Database::getRows($sql, $params);
+    }
+
+    //Productos vendidos en los ultimos 6 meses
+    public function productosVendidos()
+    {
+        $sql = 'SELECT EXTRACT(MONTH FROM pedidos.fecha_pedido) as mes, sum(detalle_pedido.cantidad_producto) as cantidadDia FROM detalle_pedido 
+                INNER JOIN pedidos USING (id_pedido)
+                GROUP BY mes
+                LIMIT 6';
+        $params = null;
+        return Database::getRows($sql, $params);
+    }
+
     public function createRow()
     {
         $sql = 'INSERT INTO productos(nombre_producto, descripcion_producto, precio_producto, imagen_producto, estado_producto, id_categoria, cantidad, id_usuario)

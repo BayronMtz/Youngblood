@@ -15,6 +15,39 @@ if (isset($_GET['action'])) {
     if (isset($_SESSION['id_usuario'])) {
         // Se compara la acción a realizar cuando un administrador ha iniciado sesión.
         switch ($_GET['action']) {
+            case 'clienteMes':
+                if ($result['dataset'] = $cliente->clienteMes()) {
+                    $result['status'] = 1;
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        $result['exception'] = 'No hay clientes registrados.';
+                    }   
+                }
+                break;
+            case 'menoresEdad':
+                if ($result['dataset'] = $cliente->menoresEdad()) {
+                    $result['status'] = 1;
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        $result['exception'] = 'No hay clientes menores de edad.';
+                    }
+                }
+                break;
+            case 'mayoresEdad':
+                if ($result['dataset'] = $cliente->mayoresEdad()) {
+                    $result['status'] = 1;
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        $result['exception'] = 'No hay clientes mayores de edad.';
+                    }
+                }
+                break;
             case 'readAll':
                 if ($result['dataset'] = $cliente->readAll()) {
                     $result['status'] = 1;

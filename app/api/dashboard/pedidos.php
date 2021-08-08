@@ -27,6 +27,18 @@ if (isset($_GET['action'])) {
                     }
                 }
                 break;
+            //Caso para saber el porcentaje de pedidos por estado
+            case 'pedidosEstado':
+                if ($result['dataset'] = $pedidos->pedidosEstado()) {
+                    $result['status'] = 1;
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        $result['exception'] = 'No hay pedidos registrados';
+                    }
+                }
+                break;
             //Caso para ver productos de un pedido en el dashboard
             case 'readProductsOfOrder':
                 if ($pedidos->setIdPedido($_POST['id_pedido'])) {
