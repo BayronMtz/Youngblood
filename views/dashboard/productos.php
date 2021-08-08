@@ -21,7 +21,9 @@ Dashboard_Page::headerTemplate('Administrar productos');
         <!-- Enlace para abrir la caja de dialogo (modal) al momento de crear un nuevo registro -->
         <a href="#" onclick="openCreateDialog()" class="btn waves-effect indigo tooltipped" data-tooltip="Crear"><i class="material-icons">add_circle</i></a>
         <!-- Enlace para generar un reporte en formato PDF -->
-        <a href="../../app/reports/dashboard/productos.php" target="_blank" class="btn waves-effect amber tooltipped" data-tooltip="Reporte de productos por categoría"><i class="material-icons">assignment</i></a>
+        <a href="../../app/reports/dashboard/productos_categoria.php" target="_blank" class="btn waves-effect amber tooltipped" data-tooltip="Reporte de productos por categoría"><i class="material-icons">assignment</i></a>
+        <a href="../../app/reports/dashboard/productos_stock.php" target="_blank" class="btn waves-effect purple tooltipped" data-tooltip="Top 10 productos con mas existencias"><i class="material-icons">assignment</i></a>
+
     </div>
 </div>
 

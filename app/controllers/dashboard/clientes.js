@@ -19,9 +19,10 @@ function fillTable(dataset) {
                 <td>${row.nombres_cliente}</td>
                 <td>${row.correo_cliente}</td>
                 <td>${row.dui_cliente}</td>
-                <td>
+                <td style="display: flex;">
                     <a href="#" onclick="openUpdateDialog(${row.id_cliente})" class="btn waves-effect blue tooltipped" data-tooltip="Actualizar"><i class="material-icons">mode_edit</i></a>
                     <a href="#" onclick="openDeleteDialog(${row.id_cliente})" class="btn waves-effect red tooltipped" data-tooltip="Eliminar"><i class="material-icons">delete</i></a>
+                    <a href="../../app/reports/dashboard/comentarios_cliente.php?id=${row.id_cliente}" target="_blank" class="btn waves-effect amber tooltipped" data-tooltip="Reporte"><i class="material-icons">assignment</i></a>
                 </td>
             </tr>
         `;

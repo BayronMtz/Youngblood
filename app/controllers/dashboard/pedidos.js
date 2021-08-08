@@ -116,7 +116,7 @@ function fillProducts(dataset) {
         total += parseFloat(row.precio) * parseFloat(row.cantidad_producto);
     });
 
-    document.getElementById('lblTotal').textContent = '$'+total;
+    document.getElementById('lblTotal').textContent = '$'+total.toFixed(2);
 
     // Se agregan las filas al cuerpo de la tabla mediante su id para mostrar los registros.
     document.getElementById('tbody-rows2').innerHTML = content;

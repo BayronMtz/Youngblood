@@ -171,12 +171,24 @@ class Productos extends Validator
         return Database::getRows($sql, $params);
     }
 
+    //Top 10 de productos con mas stock
+    public function productosStock()
+    {
+        $sql = 'SELECT ROW_NUMBER() OVER(ORDER BY(SELECT cantidad) DESC) as num, nombre_producto, cantidad 
+                FROM productos 
+                ORDER BY cantidad DESC 
+                LIMIT 10;';
+        $params = null;
+        return Database::getRows($sql, $params);
+    }
+
     //Productos vendidos en los ultimos 6 meses
     public function productosVendidos()
     {
         $sql = 'SELECT EXTRACT(MONTH FROM pedidos.fecha_pedido) as mes, sum(detalle_pedido.cantidad_producto) as cantidadDia FROM detalle_pedido 
                 INNER JOIN pedidos USING (id_pedido)
                 GROUP BY mes
+                ORDER BY mes ASC
                 LIMIT 6';
         $params = null;
         return Database::getRows($sql, $params);

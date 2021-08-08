@@ -105,10 +105,12 @@ function graficaDonaPedidos() {
                 // Se comprueba si la respuesta es satisfactoria, de lo contrario se remueve la etiqueta canvas de la gráfica.
                 if (response.status) {
                     // Se declaran los arreglos para guardar los datos por gráficar.
+                    let estado_pedido = [];
                     let porcentaje = [];
                     // Se recorre el conjunto de registros devuelto por la API (dataset) fila por fila a través del objeto row.
                     response.dataset.map(function (row) {
                         // Se asignan los datos a los arreglos.
+                        estado_pedido.push(row.estado_pedido);
                         porcentaje.push(row.porcentaje);
                     });
                     /*  Es necesario crear un arreglo para tener los estados de los pedidos de forma textual y enviarlos a components.js,
@@ -120,7 +122,20 @@ function graficaDonaPedidos() {
                     *   2: Entregado. Es cuando la tienda ha entregado el pedido al cliente.
                     *   3: Anulado. Es cuando el cliente se arrepiente de haber realizado el pedido.
                     */
-                    let estados = ['Pendiente', 'Finalizado', 'Entregado', 'Anulado'];
+                    
+                    let estados = [];
+                    //Recorremos el arreglo con los estados numericos, evaluando cada uno para ingresarlo al nuevo arreglo de forma textual
+                    for (let index = 0; index < estado_pedido.length; index++) {
+                        if (estado_pedido[index] == 0) {
+                            estados[index] = 'Pendiente';
+                        } else if (estado_pedido[index] == 1) {
+                            estados[index] = 'Finalizado';
+                        } else if (estado_pedido[index] == 2) {
+                            estados[index] = 'Entregado';
+                        } else if (estado_pedido[index] == 3) {
+                            estados[index] = 'Anulado';
+                        }
+                    }
 
                     // Se llama a la función que genera y muestra una gráfica de barras. Se encuentra en el archivo components.js
                     doughnutGraph('chart6', estados, porcentaje, 'Pedidos por Estado');

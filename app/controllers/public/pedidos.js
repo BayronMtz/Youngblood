@@ -52,7 +52,8 @@ function fillTable(dataset) {
                 <td>${estadopedido}</td>
                 <td>${row.fecha_pedido}</td>
                 <td>
-                    <a href="#" onclick="showInfo(${row.id_pedido}, ${row.estado_pedido})" class="btn waves-effect blue tooltipped" data-tooltip="Editar cantidad"><i class="material-icons">info</i></a>
+                    <a href="#" onclick="showInfo(${row.id_pedido}, ${row.estado_pedido})" class="btn waves-effect blue tooltipped" data-tooltip="Información"><i class="material-icons">info</i></a>
+                    <a href="../../app/reports/public/factura.php?id=${row.id_pedido}" target="_blank" class="btn waves-effect amber tooltipped" data-tooltip="Factura"><i class="material-icons">assignment</i></a>
                 </td>
             </tr>
         `;
@@ -61,6 +62,8 @@ function fillTable(dataset) {
     document.getElementById('tbody-rows').innerHTML = content;
    
     // Se inicializa el componente Tooltip asignado a los enlaces para que funcionen las sugerencias textuales.
+    M.Tooltip.init(document.querySelectorAll('.tooltipped'));
+
 }
 
 //Funcion para mostrar información de un pedido
@@ -136,7 +139,7 @@ function fillProducts(dataset) {
         total += parseFloat(row.precio) * parseFloat(row.cantidad_producto);
     });
 
-    document.getElementById('lblTotal').textContent = '$'+total;
+    document.getElementById('lblTotal').textContent = '$'+total.toFixed(2);
 
     // Se agregan las filas al cuerpo de la tabla mediante su id para mostrar los registros.
     document.getElementById('tbody-rows2').innerHTML = content;

@@ -1,49 +1,56 @@
 <?php
-// Se verifica si existe el parámetro id en la url, de lo contrario se direcciona a la página web de origen.
-if (isset($_GET['id'])) {
-    require('../../helpers/report.php');
-    require('../../models/categorias.php');
+require('../../helpers/report.php');
+require('../../models/categorias.php');
 
-    // Se instancia el módelo Categorias para procesar los datos.
-    $categoria = new Categorias;
-
-    // Se verifica si el parámetro es un valor correcto, de lo contrario se direcciona a la página web de origen.
-    if ($categoria->setId($_GET['id'])) {
-        // Se verifica si la categoría del parametro existe, de lo contrario se direcciona a la página web de origen.
-        if ($rowCategoria = $categoria->readOne()) {
-            // Se instancia la clase para crear el reporte.
-            $pdf = new Report;
-            // Se inicia el reporte con el encabezado del documento.
-            $pdf->startReport('Productos de la categoría '.$rowCategoria['nombre_categoria']);
+// Se instancia la clase para crear el reporte.
+$pdf = new Report;
+// Se inicia el reporte con el encabezado del documento.
+$pdf->startReport('Productos por Categoría');
+// Se instancia el módelo categorias para obtener los datos.
+$categoria = new Categorias;
+// Se verifica si existen registros (categorías) para mostrar, de lo contrario se imprime un mensaje.
+if ($dataCategoria = $categoria->readAll()) {
+    // Se recorren los registros ($dataCategorias) fila por fila ($rowCategoria).
+    foreach ($dataCategoria as $rowCategoria) {
+        // Se establece un color de relleno para mostrar el nombre de la categoría.
+        $pdf->SetFillColor(26, 35, 120);
+        //Se establece el color del texto
+        $pdf->SetTextColor(255);
+        // Se imprime una celda con el nombre de la categoría.
+        $pdf->Cell(0, 10, utf8_decode('Categoria: ' . $rowCategoria['nombre_categoria']), 1, 1, 'C', 1);
+        //Se establece el color del texto
+        $pdf->SetTextColor(0);
+        // Se establece la categoría para obtener sus productos, de lo contrario se imprime un mensaje de error.
+        if ($categoria->setId($rowCategoria['id_categoria'])) {
             // Se verifica si existen registros (productos) para mostrar, de lo contrario se imprime un mensaje.
-            if ($dataProductos = $categoria->readProductosCategoria()) {
+            if ($dataProductos = $categoria->readAllByCategory()) {
                 // Se establece un color de relleno para los encabezados.
-                $pdf->SetFillColor(78,156,181);
+                $pdf->SetFillColor(225);
                 // Se establece la fuente para los encabezados.
-                $pdf->SetFont('Times', 'B', 11);
+                $pdf->SetFont('Arial', 'B', 11);
                 // Se imprimen las celdas con los encabezados.
-                $pdf->Cell(140, 10, utf8_decode('Nombre'), 1, 0, 'C', 1);
-                $pdf->Cell(46, 10, utf8_decode('Precio (US$)'), 1, 1, 'C', 1);
-                // Se establece la fuente para los datos de los productos.
-                $pdf->SetFont('Times', '', 11);
+                $pdf->Cell(130, 10, utf8_decode('Producto'), 1, 0, 'C', 1);
+                $pdf->Cell(56, 10, utf8_decode('Precio $(USD)'), 1, 1, 'C', 1);
+                // Se establece la fuente para los datos de los Pedidos.
+                $pdf->SetFont('Arial', '', 11);
                 // Se recorren los registros ($dataProductos) fila por fila ($rowProducto).
                 foreach ($dataProductos as $rowProducto) {
-                    // Se imprimen las celdas con los datos de los productos.
-                    $pdf->Cell(140, 10, utf8_decode($rowProducto['nombre_producto']), 1, 0);
-                    $pdf->Cell(46, 10, $rowProducto['precio_producto'], 1, 1);
+                    // Se imprimen las celdas con los datos de los PRODUCTOS.
+                    $pdf->Cell(130, 10, utf8_decode($rowProducto['nombre_producto']), 1, 0, 'C');
+                    $pdf->Cell(56, 10, $rowProducto['precio_producto'], 1, 1, 'C');
                 }
             } else {
-                $pdf->Cell(0, 10, utf8_decode('No hay productos para esta categoría'), 1, 1);
+                $pdf->Cell(0, 10, utf8_decode('No hay productos de esta categoria'), 1, 1);
             }
-            // Se envía el documento al navegador y se llama al método Footer()
-            $pdf->Output();
         } else {
-            header('location: ../../../views/dashboard/categorias.php');
+            $pdf->Cell(0, 10, utf8_decode('Id incorrecto'), 1, 1);
         }
-    } else {
-        header('location: ../../../views/dashboard/categorias.php');
     }
 } else {
-    header('location: ../../../views/dashboard/categorias.php');
+    $pdf->Cell(0, 10, utf8_decode('No hay registros para mostrar'), 1, 1);
 }
+
+// Se envía el documento al navegador y se llama al método Footer()
+$pdf->Output();
+
 ?>

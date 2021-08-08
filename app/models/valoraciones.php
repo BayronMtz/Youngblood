@@ -134,6 +134,35 @@
             return Database::getRows($sql, $params);
         }
 
+        //Consulta para obtener la informacion de un cliente
+        public function readClient()
+        {
+            $sql = 'SELECT CONCAT(nombres_cliente,\' \',apellidos_cliente) as cliente, dui_cliente 
+                    FROM clientes 
+                    WHERE id_cliente = ?';
+            $params = array($this->idcliente);
+            return Database::getRow($sql, $params);
+        }
+
+        //Consulta para obtener nombres de los productos
+        public function getProducts()
+        {
+            $sql = 'SELECT id_producto, nombre_producto FROM productos';
+            $params = null;
+            return Database::getRows($sql, $params);
+        }
+
+        //Consulta para obtener valoraciones parametrizadas por cliente y product
+        public function getReviewsByProduct()
+        {
+            $sql = 'SELECT valoracion, fecha, puntuaciones.puntuacion 
+                    FROM valoraciones 
+                    INNER JOIN puntuaciones USING(id_puntuacion) 
+                    WHERE id_cliente = ? AND id_producto = ?';
+            $params = array($this->idcliente, $this->idproducto);
+            return Database::getRows($sql, $params);
+        }
+
         //Consulta para cargar una valoracion
         public function getReview()
         {

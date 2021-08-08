@@ -19,8 +19,7 @@ Dashboard_Page::headerTemplate('Administrar pedidos');
         </div>
     </form>
     <div class="input-field center-align col s12 m4">
-        <!-- Enlace para abrir la caja de dialogo (modal) al momento de crear un nuevo registro -->
-        <a href="#" onclick="openCreateDialog()" class="btn waves-effect amber tooltipped" data-tooltip="Reporte de pedidos"><i class="material-icons">assignment</i></a>
+        <a href="../../app/reports/dashboard/pedidos_estados.php" class="btn waves-effect amber tooltipped" target="_blank" data-tooltip="Reporte de pedidos"><i class="material-icons">assignment</i></a>
     </div>
 </div>
 

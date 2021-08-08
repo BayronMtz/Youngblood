@@ -101,6 +101,11 @@ class Pedidos extends Validator
         return $this->id_pedido;
     }
 
+    public function getEstado()
+    {
+        return $this->estado;
+    }
+
     /*
     *   Métodos para realizar las operaciones SCRUD (search, create, read, update, delete).
     */
@@ -136,6 +141,20 @@ class Pedidos extends Validator
         return Database::getRows($sql, $params);
     }
 
+    //Metodo para saber el top 25 de clientes que mas productos han comprado
+    public function comprasClientes()
+    {
+        $sql = 'SELECT ROW_NUMBER() OVER(ORDER BY(SELECT NULL)) as num, CONCAT(clientes.nombres_cliente,\' \',clientes.apellidos_cliente) as clientes, sum(cantidad_producto) as comprados 
+                FROM detalle_pedido 
+                INNER JOIN pedidos USING (id_pedido) 
+                INNER JOIN clientes USING (id_cliente) 
+                WHERE pedidos.estado_pedido NOT IN(0)
+                GROUP BY clientes
+                LIMIT 25';
+        $params = null;
+        return Database::getRows($sql, $params);
+    }
+
     //Metodo para cambiar el estado de un pedido a anulado por parte del cliente
     public function cancelOrder()
     {
@@ -158,8 +177,40 @@ class Pedidos extends Validator
         $sql = 'SELECT id_pedido, CONCAT(clientes.nombres_cliente,\' \',clientes.apellidos_cliente) as cliente, estado_pedido, CAST(fecha_pedido AS TEXT) 
                 FROM pedidos
                 INNER JOIN clientes ON pedidos.id_cliente = clientes.id_cliente
-                WHERE estado_pedido NOT IN (0)';
+                WHERE estado_pedido NOT IN (0)
+                ORDER BY estado_pedido ASC';
         $params = null;
+        return Database::getRows($sql, $params);
+    }
+
+    //Metodo para cargar un pedido
+    public function readOne()
+    {
+        $sql = 'SELECT id_pedido, CONCAT(clientes.nombres_cliente,\' \',clientes.apellidos_cliente) as cliente, estado_pedido, CAST(fecha_pedido AS TEXT) 
+                FROM pedidos
+                INNER JOIN clientes ON pedidos.id_cliente = clientes.id_cliente
+                WHERE estado_pedido NOT IN (0) AND id_pedido = ?
+                ORDER BY estado_pedido ASC';
+        $params = array($this->id_pedido);
+        return Database::getRow($sql, $params);
+    }
+
+    //Metodo para cargar los estados de pedidos disponibles
+    public function readEstados()
+    {
+        $sql = 'SELECT DISTINCT estado_pedido FROM pedidos';
+        $params = null;
+        return Database::getRows($sql, $params);
+    }
+
+    //Metodo para cargar los pedidos por un estado en especifico
+    public function readAllByState()
+    {
+        $sql = 'SELECT CONCAT(clientes.nombres_cliente,\' \',clientes.apellidos_cliente) as cliente, fecha_pedido 
+                FROM pedidos 
+                INNER JOIN clientes USING (id_cliente)
+                WHERE estado_pedido = ?';
+        $params = array($this->estado);
         return Database::getRows($sql, $params);
     }
 

@@ -117,6 +117,14 @@ class Categorias extends Validator
         return Database::getRows($sql, $params);
     }
 
+    //Funcion para leer productos por categoria
+    public function readAllByCategory()
+    {
+        $sql = 'SELECT nombre_producto, precio_producto FROM productos WHERE id_categoria = ?';
+        $params = array($this->id);
+        return Database::getRows($sql, $params);
+    }
+
     public function readOne()
     {
         $sql = 'SELECT id_categoria, nombre_categoria, imagen_categoria, descripcion_categoria
