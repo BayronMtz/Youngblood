@@ -88,6 +88,11 @@ Dashboard_Page::headerTemplate('Administrar clientes');
                     <label for="direccion_cliente">Dirección</label>
                 </div>
                 <div class="input-field col s12 m6">
+                    <i class="material-icons prefix">person_pin</i>
+                    <input id="alias_usuario" type="text" name="alias_usuario" class="validate" required/>
+                    <label for="alias_usuario">Alias</label>
+                </div>
+                <div class="input-field col s12 m6">
                     <i class="material-icons prefix">security</i>
                     <input id="clave_cliente" type="password" name="clave_cliente" class="validate" required/>
                     <label for="clave_cliente">Clave</label>

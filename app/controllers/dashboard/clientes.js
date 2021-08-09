@@ -106,6 +106,8 @@ function openUpdateDialog(id) {
                     document.getElementById('telefono_cliente').value = response.dataset.telefono_cliente;
                     document.getElementById('direccion_cliente').value = response.dataset.direccion_cliente;
                     document.getElementById('nacimiento_cliente').value = response.dataset.nacimiento_cliente;
+                    document.getElementById('alias_usuario').value = response.dataset.alias_usuario;
+
                     if (response.dataset.estado_cliente) {
                         document.getElementById('estado_cliente').checked = true;
                     } else {

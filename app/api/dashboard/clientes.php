@@ -68,24 +68,29 @@ if (isset($_GET['action'])) {
                                 if ($cliente->setTelefono($_POST['telefono_cliente'])) {
                                     if ($cliente->setDireccion($_POST['direccion_cliente'])) {
                                         if ($cliente->setNacimiento($_POST['nacimiento_cliente'])) {
-                                            if ($cliente->setEstado(isset($_POST['estado_cliente']) ? 1 : 0)) {
-                                                if ($_POST['clave_cliente'] == $_POST['confirmar_clave']) {
-                                                    if ($cliente->setClave($_POST['clave_cliente'])) {
-                                                        if ($cliente->createRow()) {
-                                                            $result['status'] = 1;
-                                                            $result['message'] = 'Cliente creado correctamente';
+                                            if ($cliente->setUsuario($_POST['alias_usuario'])) {
+                                                if ($cliente->setEstado(isset($_POST['estado_cliente']) ? 1 : 0)) {
+                                                    if ($_POST['clave_cliente'] == $_POST['confirmar_clave']) {
+                                                        if ($cliente->setClave($_POST['clave_cliente'])) {
+                                                            if ($cliente->createRow()) {
+                                                                $result['status'] = 1;
+                                                                $result['message'] = 'Cliente creado correctamente';
+                                                            } else {
+                                                                $result['exception'] = Database::getException();
+                                                            }
                                                         } else {
-                                                            $result['exception'] = Database::getException();
+                                                            $result['exception'] = $usuario->getPasswordError();
                                                         }
                                                     } else {
-                                                        $result['exception'] = $usuario->getPasswordError();
+                                                        $result['exception'] = 'Claves diferentes';
                                                     }
                                                 } else {
-                                                    $result['exception'] = 'Claves diferentes';
+                                                    $result['exception'] = 'Estado incorrecto';
                                                 }
                                             } else {
-                                                $result['exception'] = 'Estado incorrecto';
+                                                $result['exception'] = 'Alias incorrecto.';
                                             }
+                                            
                                         } else {
                                             $result['exception'] = 'Fecha de nacimiento incorrecta';
                                         }
@@ -154,19 +159,23 @@ if (isset($_GET['action'])) {
                                 if ($cliente->setDUI($_POST['dui_cliente'])) {
                                     if ($cliente->setTelefono($_POST['telefono_cliente'])) {
                                         if ($cliente->setDireccion($_POST['direccion_cliente'])) {
-                                            if ($cliente->setNacimiento($_POST['nacimiento_cliente'])) {
-                                                if ($cliente->setEstado(isset($_POST['estado_cliente']) ? 1 : 0)) {
-                                                    if ($cliente->updateRow()) {
-                                                        $result['status'] = 1;
-                                                        $result['message'] = 'Cliente modificado correctamente';
+                                            if ($cliente->setUsuario($_POST['alias_usuario'])) {
+                                                if ($cliente->setNacimiento($_POST['nacimiento_cliente'])) {
+                                                    if ($cliente->setEstado(isset($_POST['estado_cliente']) ? 1 : 0)) {
+                                                        if ($cliente->updateRow()) {
+                                                            $result['status'] = 1;
+                                                            $result['message'] = 'Cliente modificado correctamente';
+                                                        } else {
+                                                            $result['exception'] = Database::getException();
+                                                        }
                                                     } else {
-                                                        $result['exception'] = Database::getException();
+                                                        $result['exception'] = 'Estado incorrecto';
                                                     }
                                                 } else {
-                                                    $result['exception'] = 'Estado incorrecto';
+                                                    $result['exception'] = 'Fecha de nacimiento incorrecta';
                                                 }
                                             } else {
-                                                $result['exception'] = 'Fecha de nacimiento incorrecta';
+                                                $result['exception'] = 'Alias incorrecto';
                                             }
                                         } else {
                                             $result['exception'] = 'Dirección incorrecta';

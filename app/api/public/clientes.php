@@ -67,23 +67,27 @@ if (isset($_GET['action'])) {
                                     if ($cliente->setDireccion($_POST['direccion_cliente'])) {
                                         if ($cliente->setDUI($_POST['dui_cliente'])) {
                                             if ($cliente->setNacimiento($_POST['nacimiento_cliente'])) {
-                                                if ($cliente->setTelefono($_POST['telefono_cliente'])) {
-                                                    if ($_POST['clave_cliente'] == $_POST['confirmar_clave']) {
-                                                        if ($cliente->setClave($_POST['clave_cliente'])) {
-                                                            if ($cliente->createRow()) {
-                                                                $result['status'] = 1;
-                                                                $result['message'] = 'Cliente registrado correctamente';
+                                                if ($cliente->setUsuario($_POST['alias_usuario'])) {
+                                                    if ($cliente->setTelefono($_POST['telefono_cliente'])) {
+                                                        if ($_POST['clave_cliente'] == $_POST['confirmar_clave']) {
+                                                            if ($cliente->setClave($_POST['clave_cliente'])) {
+                                                                if ($cliente->createRow()) {
+                                                                    $result['status'] = 1;
+                                                                    $result['message'] = 'Cliente registrado correctamente';
+                                                                } else {
+                                                                    $result['exception'] = Database::getException();
+                                                                }
                                                             } else {
-                                                                $result['exception'] = Database::getException();
+                                                                $result['exception'] = $cliente->getPasswordError();
                                                             }
                                                         } else {
-                                                            $result['exception'] = $cliente->getPasswordError();
+                                                            $result['exception'] = 'Claves diferentes';
                                                         }
                                                     } else {
-                                                        $result['exception'] = 'Claves diferentes';
+                                                        $result['exception'] = 'Teléfono incorrecto';
                                                     }
                                                 } else {
-                                                    $result['exception'] = 'Teléfono incorrecto';
+                                                    $result['exception'] = 'Alias incorrecto.';
                                                 }
                                             } else {
                                                 $result['exception'] = 'Fecha de nacimiento incorrecta';
@@ -118,6 +122,7 @@ if (isset($_GET['action'])) {
                         if ($cliente->checkPassword($_POST['clave'])) {
                             $_SESSION['id_cliente'] = $cliente->getId();
                             $_SESSION['correo_cliente'] = $cliente->getCorreo();
+                            $_SESSION['alias_usuario'] = $cliente->getUsuario();
                             $result['status'] = 1;
                             $result['message'] = 'Autenticación correcta';
                         } else {

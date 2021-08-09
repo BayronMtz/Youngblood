@@ -59,6 +59,11 @@ Public_Page::headerTemplate('Registrarse');
                 <input type="text" id="direccion_cliente" name="direccion_cliente" maxlength="200" class="validate" required/>
                 <label for="direccion_cliente">Dirección</label>
             </div>
+            <div class="input-field col s12">
+                <i class="material-icons prefix">account_box</i>
+                <input type="text" id="alias_usuario" name="alias_usuario" maxlength="200" class="validate" required/>
+                <label for="alias_usuario">Alias</label>
+            </div>
             <label class="center-align col s12">
                 <input type="checkbox" id="condicion" name="condicion" required/>
                 <span>Acepto <a href="#terminos" class="modal-trigger">términos y condiciones</a></span>
