@@ -5,7 +5,7 @@ require('../../models/productos.php');
 // Se instancia la clase para crear el reporte.
 $pdf = new Report;
 // Se inicia el reporte con el encabezado del documento.
-$pdf->startReport('Top 1o Productos con mas Existencias');
+$pdf->startReport('Top 10 Productos con mas Existencias');
 // Se instancia el módelo pedido para obtener los datos.
 $producto = new Productos;
 //Se verifica si existen datos, sino se imprime un mensaje
