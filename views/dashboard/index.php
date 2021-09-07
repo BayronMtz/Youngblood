@@ -8,7 +8,7 @@ Dashboard_Page::headerTemplate('Iniciar sesión');
 <div class="container">
     <div class="row">
         <!-- Formulario para iniciar sesión -->
-        <form method="post" id="session-form">
+        <form method="post" id="session-form" autocomplete="off">
             <div class="input-field col s12 m6 offset-m3">
                 <i class="material-icons prefix">person_pin</i>
                 <input id="alias" type="text" name="alias" class="validate" required/>

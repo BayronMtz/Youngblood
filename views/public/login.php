@@ -10,11 +10,11 @@ Public_Page::headerTemplate('Iniciar sesión');
     <!-- Título del contenido principal -->
     <h4 class="center-align indigo-text">Iniciar sesión</h4>
     <!-- Formulario para iniciar sesión -->
-    <form method="post" id="session-form">
+    <form method="post" id="session-form" autocomplete="off">
         <div class="row">
             <div class="input-field col s12 m4 offset-m4">
                 <i class="material-icons prefix">email</i>
-                <input type="email" id="usuario" name="usuario" class="validate" required/>
+                <input type="email" id="usuario" name="usuario" autocomplete="off" class="validate" required/>
                 <label for="usuario">Correo electrónico</label>
             </div>
             <div class="input-field col s12 m4 offset-m4">

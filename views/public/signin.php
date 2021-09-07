@@ -10,7 +10,7 @@ Public_Page::headerTemplate('Registrarse');
     <!-- Título del contenido principal -->
     <h4 class="center-align indigo-text">Regístrate como cliente</h4>
     <!-- Formulario para crear cuenta -->
-    <form method="post" id="register-form">
+    <form method="post" id="register-form" autocomplete="off">
         <!-- Campo oculto para asignar el token del reCAPTCHA -->
         <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response"/>
         <div class="row">
@@ -46,12 +46,12 @@ Public_Page::headerTemplate('Registrarse');
             </div>
             <div class="input-field col s12 m6">
                 <i class="material-icons prefix">security</i>
-                <input type="password" id="clave_cliente" name="clave_cliente" class="validate" required/>
+                <input type="password" id="clave_cliente" minlength="8" name="clave_cliente" class="validate" required/>
                 <label for="clave_cliente">Clave</label>
             </div>
             <div class="input-field col s12 m6">
                 <i class="material-icons prefix">security</i>
-                <input type="password" id="confirmar_clave" name="confirmar_clave" class="validate" required/>
+                <input type="password" id="confirmar_clave" minlength="8" name="confirmar_clave" class="validate" required/>
                 <label for="confirmar_clave">Confirmar clave</label>
             </div>
             <div class="input-field col s12">

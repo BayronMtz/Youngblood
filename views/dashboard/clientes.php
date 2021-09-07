@@ -48,7 +48,7 @@ Dashboard_Page::headerTemplate('Administrar clientes');
         <!-- Título para la caja de dialogo -->
         <h4 id="modal-title" class="center-align"></h4>
         <!-- Formulario para crear o actualizar un registro -->
-        <form method="post" id="save-form">
+        <form method="post" id="save-form" autocomplete="off">
             <!-- Campo oculto para asignar el id del registro al momento de modificar -->
             <input class="hide" type="number" id="id_cliente" name="id_cliente"/>
             <div class="row">
@@ -68,22 +68,22 @@ Dashboard_Page::headerTemplate('Administrar clientes');
                     <label for="correo_cliente">Correo</label>
                 </div>
                 <div class="input-field col s12 m6">
-                    <i class="material-icons prefix">person_pin</i>
+                    <i class="material-icons prefix">fingerprint</i>
                     <input id="dui_cliente" type="text" name="dui_cliente" class="validate" required/>
                     <label for="dui_cliente">DUI</label>
                 </div>
                 <div class="input-field col s12 m6">
-                    <i class="material-icons prefix">person_pin</i>
+                    <i class="material-icons prefix">phone</i>
                     <input id="telefono_cliente" type="text" name="telefono_cliente" class="validate" required/>
                     <label for="telefono_cliente">Teléfono</label>
                 </div>
                 <div class="input-field col s12 m6">
-                    <i class="material-icons prefix">person_pin</i>
+                    <i class="material-icons prefix">cake</i>
                     <input id="nacimiento_cliente" type="date" name="nacimiento_cliente" class="validate" required/>
                     <label for="nacimiento_cliente">Fecha de nacimiento</label>
                 </div>
                 <div class="input-field col s12 m6">
-                    <i class="material-icons prefix">person_pin</i>
+                    <i class="material-icons prefix">place</i>
                     <input id="direccion_cliente" type="text" name="direccion_cliente" class="validate" required/>
                     <label for="direccion_cliente">Dirección</label>
                 </div>
