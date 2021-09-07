@@ -150,6 +150,7 @@ class Pedidos extends Validator
                 INNER JOIN clientes USING (id_cliente) 
                 WHERE pedidos.estado_pedido NOT IN(0)
                 GROUP BY clientes
+                ORDER BY comprados desc
                 LIMIT 25';
         $params = null;
         return Database::getRows($sql, $params);

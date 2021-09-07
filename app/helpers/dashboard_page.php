@@ -54,7 +54,6 @@ class Dashboard_Page
                                         <li><a href="valoraciones.php"><i class="material-icons left">star</i>Valoraciones</a></li>
                                         <li><a href="usuarios.php"><i class="material-icons left">group</i>Usuarios</a></li>
                                         <li><a href="#" class="dropdown-trigger" data-target="dropdown"><i class="material-icons left">verified_user</i>Cuenta: <b>' . $_SESSION['alias_usuario'] . '</b></a></li>
-
                                     </ul>
                                     <ul id="dropdown" class="dropdown-content">
                                         <li><a href="#" onclick="openProfileDialog()"><i class="material-icons">face</i>Editar perfil</a></li>
