@@ -39,7 +39,7 @@ class Public_Page
                 print('
                     <header>
                         <div class="navbar-fixed">
-                            <nav class="blue darken-4">
+                            <nav class="indigo darken-4">
                                 <div class="nav-wrapper">
                                     <a href="index.php" class="brand-logo"><img src="../../resources/img/logo.png" height="60"></a>
                                     <a href="#" data-target="mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
