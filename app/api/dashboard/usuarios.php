@@ -64,19 +64,24 @@ if (isset($_GET['action'])) {
                 if ($usuario->setId($_SESSION['id_usuario'])) {
                     $_POST = $usuario->validateForm($_POST);
                     if ($usuario->checkPassword($_POST['clave_actual'])) {
-                        if ($_POST['clave_nueva_1'] == $_POST['clave_nueva_2']) {
-                            if ($usuario->setClave($_POST['clave_nueva_1'])) {
-                                if ($usuario->changePassword()) {
-                                    $result['status'] = 1;
-                                    $result['message'] = 'Contraseña cambiada correctamente';
+                        if ($_POST['clave_actual'] == $_POST['clave_nueva_1'] ||
+                            $_POST['clave_actual'] == $_POST['clave_nueva_2']) {
+                                $result['exception'] = 'Su clave no puede ser igual que la anterior.';
+                        } else {
+                            if ($_POST['clave_nueva_1'] == $_POST['clave_nueva_2']) {
+                                if ($usuario->setClave($_POST['clave_nueva_1'])) {
+                                    if ($usuario->changePassword()) {
+                                        $result['status'] = 1;
+                                        $result['message'] = 'Contraseña cambiada correctamente';
+                                    } else {
+                                        $result['exception'] = Database::getException();
+                                    }
                                 } else {
-                                    $result['exception'] = Database::getException();
+                                    $result['exception'] = $usuario->getPasswordError();
                                 }
                             } else {
-                                $result['exception'] = $usuario->getPasswordError();
+                                $result['exception'] = 'Claves nuevas diferentes';
                             }
-                        } else {
-                            $result['exception'] = 'Claves nuevas diferentes';
                         }
                     } else {
                         $result['exception'] = 'Clave actual incorrecta';

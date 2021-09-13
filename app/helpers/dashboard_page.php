@@ -208,6 +208,9 @@ class Dashboard_Page
             <div id="password-modal" class="modal">
                 <div class="modal-content">
                     <h4 class="center-align">Cambiar contraseña</h4>
+                    <label>Su contraseña debe como mínimo ocho caracteres entre
+                        alfanuméricos y especiales (al menos uno de cada uno) y que sea diferente al nombre de usuario</label>
+                    
                     <form method="post" id="password-form">
                         <div class="row">
                             <div class="input-field col s12 m6 offset-m3">
@@ -230,6 +233,14 @@ class Dashboard_Page
                                 <input id="clave_nueva_2" type="password" name="clave_nueva_2" class="validate" required/>
                                 <label for="clave_nueva_2">Confirmar clave</label>
                             </div>
+                        </div>
+                        <div class="row center-align">
+                            <p>
+                                <label>
+                                <input type="checkbox" onchange="showHidePassword(\'checkboxContraseña\', \'clave_actual\',\'clave_nueva_1\',\'clave_nueva_2\')" id="checkboxContraseña" />
+                                <span>Mostrar Contraseña</span>
+                                </label>
+                            </p>
                         </div>
                         <div class="row center-align">
                             <a href="#" class="btn waves-effect grey tooltipped modal-close" data-tooltip="Cancelar"><i class="material-icons">cancel</i></a>

@@ -109,6 +109,24 @@ document.getElementById('password-form').addEventListener('submit', function (ev
     });
 });
 
+//Función para mostrar contraseña
+function showHidePassword(checkbox, pass1, pass2, pass3) {
+    var check = document.getElementById(checkbox);
+    var password = document.getElementById(pass1);
+    var password2 = document.getElementById(pass2);
+    var password3 = document.getElementById(pass3);
+    //Verificando el estado del check
+    if (check.checked == true) {
+        password.type = 'text';
+        password2.type = 'text';
+        password3.type = 'text';
+    } else {
+        password.type = 'password';
+        password2.type = 'password';
+        password3.type = 'password';
+    }
+}
+
 // Función para mostrar un mensaje de confirmación al momento de cerrar sesión.
 function logOut() {
     swal({
