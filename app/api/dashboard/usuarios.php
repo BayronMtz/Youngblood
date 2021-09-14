@@ -350,13 +350,18 @@ if (isset($_GET['action'])) {
                 if ($usuario->checkUser($_POST['alias'])) {
                     if($usuario->verificarEstado()) {
                         if ($usuario->checkPassword($_POST['clave'])) {
-                            
-                            if($usuario->actualizarIntentos(0)){
-                                $result['status'] = 1;
-                                $result['message'] = 'Autenticación correcta';
-                                $_SESSION['id_usuario'] = $usuario->getId();
+                            if($usuario->verificar90dias()) {
+                                if($usuario->actualizarIntentos(0)){
+                                    $result['status'] = 1;
+                                    $result['message'] = 'Autenticación correcta';
+                                    $_SESSION['id_usuario'] = $usuario->getId();
+                                    $_SESSION['alias_usuario'] = $usuario->getAlias();
+                                }
+                            } else {
+                                $result['error'] = 1;
+                                $result['exception'] = 'Debes actualizar tu contraseña';
                                 $_SESSION['id_usuario_tmp'] = $usuario->getId();
-                                $_SESSION['alias_usuario'] = $usuario->getAlias();
+                                unset($_SESSION['id_usuario']);
                             }
                         } else {
                             $datos = $usuario->verificarIntentos();
@@ -383,6 +388,39 @@ if (isset($_GET['action'])) {
                     } else {
                         $result['exception'] = 'Alias incorrecto';
                     }
+                }
+                break;
+            case 'changePassword':
+                if ($usuario->setId($_SESSION['id_usuario_tmp'])) {
+                    $_POST = $usuario->validateForm($_POST);
+                    if ($usuario->checkPassword($_POST['clave_actual'])) {
+                        if ($_POST['clave_actual'] == $_POST['clave_nueva_1'] ||
+                            $_POST['clave_actual'] == $_POST['clave_nueva_2']) {
+                                $result['exception'] = 'Su clave no puede ser igual que la anterior.';
+                        } else {
+                            if ($_POST['clave_nueva_1'] == $_POST['clave_nueva_2']) {
+                                if ($usuario->setClave($_POST['clave_nueva_1'])) {
+                                    if ($usuario->changePasswordOut()) {
+                                        $result['status'] = 1;
+                                        $result['message'] = 'Contraseña cambiada correctamente';
+                                        unset($_SESSION['id_usuario_tmp']);
+                                        $_SESSION['idusuario'] = $usuario->getId();
+                                        $usuario->actualizarFecha();
+                                    } else {
+                                        $result['exception'] = Database::getException();
+                                    }
+                                } else {
+                                    $result['exception'] = $usuario->getPasswordError();
+                                }
+                            } else {
+                                $result['exception'] = 'Claves nuevas diferentes';
+                            }
+                        }
+                    } else {
+                        $result['exception'] = 'Clave actual incorrecta';
+                    }
+                } else {
+                    $result['exception'] = 'Usuario incorrecto';
                 }
                 break;
             default:

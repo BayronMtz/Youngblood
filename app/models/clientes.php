@@ -444,4 +444,28 @@ class Clientes extends Validator
         $params = array($this->id, $observacion);
         return Database::executeRow($sql, $params);
     }
+
+    public function verificar90dias(){
+        $sql = 'SELECT fecha_clave FROM clientes 
+                WHERE id_cliente = ? AND fecha_clave > (SELECT current_date - 90)';
+        $params = array($this->id);
+        return Database::getRow($sql, $params);
+    }
+
+    public function changePasswordOut()
+    {
+        $hash = password_hash($this->clave, PASSWORD_DEFAULT);
+        $sql = 'UPDATE clientes SET clave_cliente = ? WHERE id_cliente = ?';
+        $params = array($hash, $_SESSION['id_cliente_tmp']);
+        return Database::executeRow($sql, $params);
+    }
+
+    public function actualizarFecha()
+    {
+        $sql = 'UPDATE clientes 
+                SET fecha_clave = current_date
+                WHERE id_cliente = ?';
+        $params = array($this->id);
+        return Database::executeRow($sql, $params);
+    }
 }

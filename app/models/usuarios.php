@@ -318,4 +318,28 @@ class Usuarios extends Validator
         $params = array($this->id, $observacion);
         return Database::executeRow($sql, $params);
     }
+
+    public function verificar90dias(){
+        $sql = 'SELECT fecha_clave FROM usuarios 
+                WHERE id_usuario = ? AND fecha_clave > (SELECT current_date - 90)';
+        $params = array($this->id);
+        return Database::getRow($sql, $params);
+    }
+
+    public function changePasswordOut()
+    {
+        $hash = password_hash($this->clave, PASSWORD_DEFAULT);
+        $sql = 'UPDATE usuarios SET clave_usuario = ? WHERE id_usuario = ?';
+        $params = array($hash, $_SESSION['id_usuario_tmp']);
+        return Database::executeRow($sql, $params);
+    }
+
+    public function actualizarFecha()
+    {
+        $sql = 'UPDATE usuarios 
+                SET fecha_clave = current_date
+                WHERE id_usuario = ?';
+        $params = array($this->id);
+        return Database::executeRow($sql, $params);
+    }
 }

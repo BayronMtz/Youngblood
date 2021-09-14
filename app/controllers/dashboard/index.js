@@ -48,6 +48,8 @@ document.getElementById('session-form').addEventListener('submit', function (eve
                 // Se comprueba si la respuesta es satisfactoria, de lo contrario se muestra un mensaje con la excepción.
                 if (response.status) {
                     sweetAlert(1, response.message, 'main.php');
+                } else if (response.error){
+                    sweetAlert(2, response.exception,'cambiar_contra.php');
                 } else {
                     sweetAlert(2, response.exception, null);
                 }
