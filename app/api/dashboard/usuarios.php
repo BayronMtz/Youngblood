@@ -217,6 +217,26 @@ if (isset($_GET['action'])) {
                     $result['exception'] = 'No se puede eliminar a sí mismo';
                 }
                 break;
+            case 'active':
+                if ($_POST['id_usuario'] != $_SESSION['id_usuario']) {
+                    if ($usuario->setId($_POST['id_usuario'])) {
+                        if ($usuario->readOne()) {
+                            if ($usuario->actualizarEstado(1)) {
+                                $result['status'] = 1;
+                                $result['message'] = 'Usuario desbloqueado correctamente';
+                            } else {
+                                $result['exception'] = Database::getException();
+                            }
+                        } else {
+                            $result['exception'] = 'Usuario inexistente';
+                        }
+                    } else {
+                        $result['exception'] = 'Usuario incorrecto';
+                    }
+                } else {
+                    $result['exception'] = 'No se puede eliminar a sí mismo';
+                }
+                break;
             default:
                 $result['exception'] = 'Acción no disponible dentro de la sesión';
         }

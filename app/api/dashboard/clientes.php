@@ -215,6 +215,22 @@ if (isset($_GET['action'])) {
                     $result['exception'] = 'Cliente incorrecto';
                 }
                 break;
+            case 'active':
+                if ($cliente->setId($_POST['id_cliente'])) {
+                    if ($cliente->readOne()) {
+                        if ($cliente->actualizarEstado(1)) {
+                            $result['status'] = 1;
+                            $result['message'] = 'Cliente desbloqueado correctamente';
+                        } else {
+                            $result['exception'] = Database::getException();
+                        }
+                    } else {
+                        $result['exception'] = 'Cliente inexistente';
+                    }
+                } else {
+                    $result['exception'] = 'Cliente incorrecto';
+                }
+                break;
         }
         // Se indica el tipo de contenido a mostrar y su respectivo conjunto de caracteres.
         header('content-type: application/json; charset=utf-8');

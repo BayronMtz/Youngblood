@@ -19,10 +19,11 @@ function fillTable(dataset) {
                 <td>${row.nombres_cliente}</td>
                 <td>${row.correo_cliente}</td>
                 <td>${row.dui_cliente}</td>
-                <td style="display: flex;">
+                <td >
                     <a href="#" onclick="openUpdateDialog(${row.id_cliente})" class="btn waves-effect blue tooltipped" data-tooltip="Actualizar"><i class="material-icons">mode_edit</i></a>
                     <a href="#" onclick="openDeleteDialog(${row.id_cliente})" class="btn waves-effect red tooltipped" data-tooltip="Eliminar"><i class="material-icons">delete</i></a>
                     <a href="../../app/reports/dashboard/comentarios_cliente.php?id=${row.id_cliente}" target="_blank" class="btn waves-effect amber tooltipped" data-tooltip="Reporte"><i class="material-icons">assignment</i></a>
+                    <a href="#" onclick="openActiveDialog(${row.id_cliente})" class="btn waves-effect green tooltipped" data-tooltip="Activar"><i class="material-icons">check</i></a>
                 </td>
             </tr>
         `;
@@ -134,6 +135,15 @@ function openDeleteDialog(id) {
     data.append('id_cliente', id);
     // Se llama a la función que elimina un registro. Se encuentra en el archivo components.js
     confirmDelete(API_CLIENTES, data);
+}
+
+// Función para establecer el registro a eliminar y abrir una caja de dialogo de confirmación.
+function openActiveDialog(id) {
+    // Se define un objeto con los datos del registro seleccionado.
+    const data = new FormData();
+    data.append('id_cliente', id);
+    // Se llama a la función que elimina un registro. Se encuentra en el archivo components.js
+    confirmActive(API_CLIENTES, data);
 }
 
 //Para reiniciar la busqueda
