@@ -73,7 +73,19 @@ if (isset($_GET['action'])) {
                     }
                     
                 }
-                
+                break;
+
+            //Caso para cargar la cantidad de intentos fallidos
+            case 'countFails':
+                if ($result['dataset'] = $usuario->countFails()) {
+                    $result['status'] = 1;
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        $result['exception'] = 'Usted no posee intentos fallidos.';
+                    }
+                }
                 break;
             case 'editProfile':
                 $_POST = $usuario->validateForm($_POST);

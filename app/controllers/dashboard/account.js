@@ -129,6 +129,32 @@ function openSecurityDialog() {
     }).catch(function (error) {
         console.log(error);
     });
+
+    //Contador de intentos fallidos
+    fetch(API + 'countFails', {
+        method: 'get'
+    }).then(function (request) {
+        // Se verifica si la petición es correcta, de lo contrario se muestra un mensaje indicando el problema.
+        if (request.ok) {
+            request.json().then(function (response) {
+                // Se comprueba si la respuesta es satisfactoria, de lo contrario se muestra un mensaje con la excepción.
+                if (response.status) {
+                    //Se asigna el numero obtenido al label
+                    document.getElementById('lblIntentos').textContent = response.dataset.intentos;
+                    // Se inicializa el componente Tooltip asignado a los enlaces para que funcionen las sugerencias textuales.
+                    M.Tooltip.init(document.querySelectorAll('.tooltipped'));
+                    // Se actualizan los campos para que las etiquetas (labels) no queden sobre los datos.
+                    M.updateTextFields();
+                } else {
+                    sweetAlert(2, response.exception, null);
+                }
+            });
+        } else {
+            console.log(request.status + ' ' + request.statusText);
+        }
+    }).catch(function (error) {
+        console.log(error);
+    });
 }
 
 //Al cambiar de valor el checkbox 

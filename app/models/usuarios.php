@@ -148,6 +148,14 @@ class Usuarios extends Validator
         return Database::getRows($sql, $params);
     }
 
+    //Cuenta los intentos fallidos
+    public function countFails()
+    {
+        $sql = 'SELECT COUNT(id_bitacora) as intentos FROM bitacora WHERE id_usuario = ?';
+        $params = array($_SESSION['id_usuario']);
+        return Database::getRow($sql, $params);
+    }
+
     public function checkPassword($password)
     {
         $sql = 'SELECT clave_usuario FROM usuarios WHERE id_usuario = ?';

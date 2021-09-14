@@ -291,7 +291,7 @@ class Dashboard_Page
                         <div class="row">
                             <div class="col s12 m6">
                                 <blockquote>
-                                Intentos fallidos de sesión: <b>14</b>
+                                Intentos fallidos de sesión: <b id="lblIntentos">14</b>
                                 </blockquote>
                             </div>
                             <div class="col s12 m6">
