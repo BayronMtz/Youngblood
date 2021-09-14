@@ -15,6 +15,7 @@ class Clientes extends Validator
     private $direccion = null;
     private $usuario = null;
     private $clave = null;
+    private $alias = null;
     private $estado = null; // Valor por defecto en la base de datos: true
 
     /*
@@ -84,6 +85,16 @@ class Clientes extends Validator
     {
         if ($this->validateDUI($value)) {
             $this->dui = $value;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function setAlias($value)
+    {
+        if ($this->validateAlphanumeric($value, 1, 50)) {
+            $this->alias = $value;
             return true;
         } else {
             return false;
@@ -168,6 +179,11 @@ class Clientes extends Validator
         return $this->usuario;
     }
 
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
     public function getNacimiento()
     {
         return $this->nacimiento;
@@ -232,6 +248,15 @@ class Clientes extends Validator
         }
     }
 
+    public function readProfile()
+    {
+        $sql = 'SELECT id_cliente, nombres_cliente, apellidos_cliente, correo_cliente, alias_usuario 
+                FROM clientes 
+                WHERE id_cliente = ?';
+        $params = array($_SESSION['id_cliente']);
+        return Database::getRow($sql, $params);
+    }
+
     public function checkPassword($password)
     {
         $sql = 'SELECT clave_cliente FROM clientes WHERE id_cliente = ?';
@@ -258,6 +283,15 @@ class Clientes extends Validator
                 SET nombres_cliente = ?, apellidos_cliente = ?, correo_cliente = ?, dui_cliente = ?, telefono_cliente = ?, nacimiento_cliente = ?, direccion_cliente = ?, alias_usuario = ?
                 WHERE id_cliente = ?';
         $params = array($this->nombres, $this->apellidos, $this->correo, $this->dui, $this->telefono, $this->nacimiento, $this->direccion, $this->usuario, $this->id);
+        return Database::executeRow($sql, $params);
+    }
+
+    public function editProfile2()
+    {
+        $sql = 'UPDATE clientes
+                SET nombres_cliente = ?, apellidos_cliente = ?, correo_cliente = ?, alias_usuario = ?
+                WHERE id_cliente = ?';
+        $params = array($this->nombres, $this->apellidos, $this->correo, $this->alias, $_SESSION['id_cliente']);
         return Database::executeRow($sql, $params);
     }
 

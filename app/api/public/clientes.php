@@ -20,6 +20,73 @@ if (isset($_GET['action'])) {
                 $result['message'] = 'Sesión cerrada correctamente.';
                 $result['status'] = 1;
                 break;
+            case 'readProfile':
+                if ($result['dataset'] = $cliente->readProfile()) {
+                    $result['status'] = 1;
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        $result['exception'] = 'Usuario inexistente';
+                    }
+                }
+                break;
+            case 'editProfile':
+                $_POST = $cliente->validateForm($_POST);
+                if ($cliente->setNombres($_POST['nombres_perfil'])) {
+                    if ($cliente->setApellidos($_POST['apellidos_perfil'])) {
+                        if ($cliente->setCorreo($_POST['correo_perfil'])) {
+                            if ($cliente->setAlias($_POST['alias_perfil'])) {
+                                if ($cliente->editProfile2()) {
+                                    $result['status'] = 1;
+                                    $_SESSION['alias_usuario'] = $cliente->getAlias();
+                                    $result['message'] = 'Perfil modificado correctamente';
+                                } else {
+                                    $result['exception'] = Database::getException();
+                                }
+                            } else {
+                                $result['exception'] = 'Alias incorrecto';
+                            }
+                        } else {
+                            $result['exception'] = 'Correo incorrecto';
+                        }
+                    } else {
+                        $result['exception'] = 'Apellidos incorrectos';
+                    }
+                } else {
+                    $result['exception'] = 'Nombres incorrectos';
+                }
+                break;
+            case 'changePassword':
+                if ($cliente->setId($_SESSION['id_cliente'])) {
+                    $_POST = $cliente->validateForm($_POST);
+                    if ($cliente->checkPassword($_POST['clave_actual'])) {
+                        if ($_POST['clave_actual'] == $_POST['clave_nueva_1'] ||
+                            $_POST['clave_actual'] == $_POST['clave_nueva_2']) {
+                                $result['exception'] = 'Su clave no puede ser igual que la anterior.';
+                        } else {
+                            if ($_POST['clave_nueva_1'] == $_POST['clave_nueva_2']) {
+                                if ($cliente->setClave($_POST['clave_nueva_1'])) {
+                                    if ($cliente->changePassword()) {
+                                        $result['status'] = 1;
+                                        $result['message'] = 'Contraseña cambiada correctamente';
+                                    } else {
+                                        $result['exception'] = Database::getException();
+                                    }
+                                } else {
+                                    $result['exception'] = $usuario->getPasswordError();
+                                }
+                            } else {
+                                $result['exception'] = 'Claves nuevas diferentes';
+                            }
+                        }
+                    } else {
+                        $result['exception'] = 'Clave actual incorrecta';
+                    }
+                } else {
+                    $result['exception'] = 'Usuario incorrecto';
+                }
+                break;
             default:
                 $result['exception'] = 'Acción no disponible dentro de la sesión';
         }

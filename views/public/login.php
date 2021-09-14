@@ -24,6 +24,14 @@ Public_Page::headerTemplate('Iniciar sesión');
             </div>
         </div>
         <div class="row center-align">
+            <p>
+                <label>
+                <input type="checkbox" onchange="showHidePassword('checkboxContraseña', 'clave')" id="checkboxContraseña" />
+                <span>Mostrar Contraseña</span>
+                </label>
+            </p>
+        </div>
+        <div class="row center-align">
             <button type="submit" class="btn waves-effect blue tooltipped" data-tooltip="Ingresar"><i class="material-icons">send</i></button>
         </div>
     </form>
