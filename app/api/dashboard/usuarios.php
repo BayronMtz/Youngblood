@@ -272,17 +272,33 @@ if (isset($_GET['action'])) {
             case 'logIn':
                 $_POST = $usuario->validateForm($_POST);
                 if ($usuario->checkUser($_POST['alias'])) {
-                    if ($usuario->checkPassword($_POST['clave'])) {
-                        $result['status'] = 1;
-                        $result['message'] = 'Autenticación correcta';
-                        $_SESSION['id_usuario'] = $usuario->getId();
-                        $_SESSION['alias_usuario'] = $usuario->getAlias();
-                    } else {
-                        if (Database::getException()) {
-                            $result['exception'] = Database::getException();
+                    if($usuario->verificarEstado()) {
+                        if ($usuario->checkPassword($_POST['clave'])) {
+                            
+                            if($usuario->actualizarIntentos(0)){
+                                $result['status'] = 1;
+                                $result['message'] = 'Autenticación correcta';
+                                $_SESSION['id_usuario'] = $usuario->getId();
+                                $_SESSION['id_usuario_tmp'] = $usuario->getId();
+                                $_SESSION['alias_usuario'] = $usuario->getAlias();
+                            }
                         } else {
-                            $result['exception'] = 'Clave incorrecta';
+                            $datos = $usuario->verificarIntentos();
+                            if($datos['intentos'] < 3){
+                                if($usuario->actualizarIntentos($datos['intentos'] + 1)) {
+                                    $result['exception'] = 'La contraseña es incorrecta';
+                                }
+                            } else {
+                                if($usuario->actualizarEstado(0)){
+                                    $result['exception'] = 'Se ha bloqueado el usuario por intentos fallidos';
+                                } else {
+                                    $result['exception'] = 'El usuario debe ser bloqueado';
+                                }
+                                
+                            }
                         }
+                    } else {
+                        $result['exception'] = 'El usuario está bloqueado.';
                     }
                 } else {
                     if (Database::getException()) {

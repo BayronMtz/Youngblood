@@ -11,6 +11,7 @@ class Usuarios extends Validator
     private $correo = null;
     private $alias = null;
     private $clave = null;
+    private $estado = null;
 
     /*
     *   Métodos para asignar valores a los atributos.
@@ -19,6 +20,16 @@ class Usuarios extends Validator
     {
         if ($this->validateNaturalNumber($value)) {
             $this->id = $value;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function setEstado($value)
+    {
+        if ($this->validateNaturalNumber($value)) {
+            $this->estado = $value;
             return true;
         } else {
             return false;
@@ -108,16 +119,21 @@ class Usuarios extends Validator
         return $this->clave;
     }
 
+    public function getEstado()
+    {
+        return $this->estado;
+    }
     /*
     *   Métodos para gestionar la cuenta del usuario.
     */
     public function checkUser($alias)
     {
-        $sql = 'SELECT id_usuario FROM usuarios WHERE alias_usuario = ?';
+        $sql = 'SELECT id_usuario,estado_usuario FROM usuarios WHERE alias_usuario = ?';
         $params = array($alias);
         if ($data = Database::getRow($sql, $params)) {
             $this->id = $data['id_usuario'];
             $this->alias = $alias;
+            $this->estado = $data['estado_usuario'];
             return true;
         } else {
             return false;
@@ -179,9 +195,10 @@ class Usuarios extends Validator
     {
         // Se encripta la clave por medio del algoritmo bcrypt que genera un string de 60 caracteres.
         $hash = password_hash($this->clave, PASSWORD_DEFAULT);
-        $sql = 'INSERT INTO usuarios(nombres_usuario, apellidos_usuario, correo_usuario, alias_usuario, clave_usuario)
-                VALUES(?, ?, ?, ?, ?)';
-        $params = array($this->nombres, $this->apellidos, $this->correo, $this->alias, $hash);
+        $sql = 'INSERT INTO usuarios(nombres_usuario, apellidos_usuario, correo_usuario, alias_usuario, clave_usuario,
+                                    intentos, estado_usuario,fecha_clave)
+                VALUES(?, ?, ?, ?, ?,?,?,current_date)';
+        $params = array($this->nombres, $this->apellidos, $this->correo, $this->alias, $hash,0,1);
         return Database::executeRow($sql, $params);
     }
 
@@ -217,6 +234,40 @@ class Usuarios extends Validator
         $sql = 'DELETE FROM usuarios
                 WHERE id_usuario = ?';
         $params = array($this->id);
+        return Database::executeRow($sql, $params);
+    }
+
+    public function verificarEstado(){
+        if ($this->estado == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function verificarIntentos(){
+        $sql = 'SELECT intentos
+        FROM usuarios
+        WHERE id_usuario = ?';
+        $params = array($this->id);
+        return Database::getRow($sql, $params);
+    }
+
+    public function actualizarIntentos($intentos)
+    {
+        $sql = 'UPDATE usuarios 
+                SET intentos = ?
+                WHERE id_usuario = ?';
+        $params = array($intentos, $this->id);
+        return Database::executeRow($sql, $params);
+    }
+
+    public function actualizarEstado($estado)
+    {
+        $sql = 'UPDATE usuarios 
+                SET estado_usuario = ?
+                WHERE id_usuario = ?';
+        $params = array($estado, $this->id);
         return Database::executeRow($sql, $params);
     }
 }
