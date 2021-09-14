@@ -16,12 +16,9 @@ if (isset($_GET['action'])) {
         // Se compara la acción a realizar cuando un administrador ha iniciado sesión.
         switch ($_GET['action']) {
             case 'logOut':
-                if (session_destroy()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'Sesión eliminada correctamente';
-                } else {
-                    $result['exception'] = 'Ocurrió un problema al cerrar la sesión';
-                }
+                unset($_SESSION['id_usuario']);
+                $result['message'] = 'Sesión cerrada correctamente.';
+                $result['status'] = 1;
                 break;
             case 'readProfile':
                 if ($result['dataset'] = $usuario->readProfile()) {

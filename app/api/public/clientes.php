@@ -16,12 +16,9 @@ if (isset($_GET['action'])) {
         // Se compara la acción a realizar cuando un cliente ha iniciado sesión.
         switch ($_GET['action']) {
             case 'logOut':
-                if (session_destroy()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'Sesión eliminada correctamente';
-                } else {
-                    $result['exception'] = 'Ocurrió un problema al cerrar la sesión';
-                }
+                unset($_SESSION['id_cliente']);
+                $result['message'] = 'Sesión cerrada correctamente.';
+                $result['status'] = 1;
                 break;
             default:
                 $result['exception'] = 'Acción no disponible dentro de la sesión';
@@ -122,7 +119,7 @@ if (isset($_GET['action'])) {
                         if ($cliente->checkPassword($_POST['clave'])) {
                             $_SESSION['id_cliente'] = $cliente->getId();
                             $_SESSION['correo_cliente'] = $cliente->getCorreo();
-                            $_SESSION['alias_usuario'] = $cliente->getUsuario();
+                            $_SESSION['alias_cliente'] = $cliente->getUsuario();
                             $result['status'] = 1;
                             $result['message'] = 'Autenticación correcta';
                         } else {
