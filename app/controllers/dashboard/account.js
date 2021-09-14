@@ -85,6 +85,61 @@ function openDevicesDialog() {
     });
 }
 
+// Función para mostrar el formulario de editar seguridad
+function openSecurityDialog() {
+    // Se abre la caja de dialogo (modal) que contiene el formulario para editar perfil, ubicado en el archivo de las plantillas.
+    let instance = M.Modal.getInstance(document.getElementById('security-modal'));
+    instance.open();
+
+    fetch(API + 'readFails', {
+        method: 'get'
+    }).then(function (request) {
+        // Se verifica si la petición es correcta, de lo contrario se muestra un mensaje indicando el problema.
+        if (request.ok) {
+            request.json().then(function (response) {
+                // Se comprueba si la respuesta es satisfactoria, de lo contrario se muestra un mensaje con la excepción.
+                if (response.status) {
+                    let content = '';
+                    // Se recorre el conjunto de registros (dataset) fila por fila a través del objeto row.
+                    response.dataset.map(function (row) {
+                        hora = row.hora.substr(0, 8);
+                        // Se crean y concatenan las filas de la tabla con los datos de cada registro.
+                        content += `
+                                <tr>
+                                    <td>${row.fecha}</td>
+                                    <td>${hora}</td>
+                                    <td>${row.observacion}</td>
+                                </tr>
+                            `;
+                    });
+                    // Se agregan las filas al cuerpo de la tabla mediante su id para mostrar los registros.
+                    document.getElementById('tbody-security').innerHTML = content;
+
+                    // Se inicializa el componente Tooltip asignado a los enlaces para que funcionen las sugerencias textuales.
+                    M.Tooltip.init(document.querySelectorAll('.tooltipped'));
+                    // Se actualizan los campos para que las etiquetas (labels) no queden sobre los datos.
+                    M.updateTextFields();
+                } else {
+                    sweetAlert(2, response.exception, null);
+                }
+            });
+        } else {
+            console.log(request.status + ' ' + request.statusText);
+        }
+    }).catch(function (error) {
+        console.log(error);
+    });
+}
+
+//Al cambiar de valor el checkbox 
+document.getElementById('checkbox_autenticacion').addEventListener('change',function(){
+    if (document.getElementById('checkboxValue').value == 'no') {
+        document.getElementById('checkboxValue').value = 'si';
+    } else {
+        document.getElementById('checkboxValue').value = 'no';
+    }
+});
+
 // Método manejador de eventos que se ejecuta cuando se envía el formulario de editar perfil.
 document.getElementById('profile-form').addEventListener('submit', function (event) {
     // Se evita recargar la página web después de enviar el formulario.

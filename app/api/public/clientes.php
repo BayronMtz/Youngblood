@@ -61,6 +61,19 @@ if (isset($_GET['action'])) {
                     }   
                 }
                 break;
+            //Caso para cargar los intentos fallidos
+            case 'readFails':
+                if ($result['dataset'] = $cliente->readFails()) {
+                    $result['status'] = 1;
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        $result['exception'] = 'Usted no posee intentos fallidos.';
+                    }
+                    
+                }
+                break;
             case 'editProfile':
                 $_POST = $cliente->validateForm($_POST);
                 if ($cliente->setNombres($_POST['nombres_perfil'])) {

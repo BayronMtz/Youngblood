@@ -140,6 +140,14 @@ class Usuarios extends Validator
         }
     }
 
+    //Carga los intentos fallidos
+    public function readFails()
+    {
+        $sql = 'SELECT*FROM bitacora WHERE id_usuario = ?';
+        $params = array($_SESSION['id_usuario']);
+        return Database::getRows($sql, $params);
+    }
+
     public function checkPassword($password)
     {
         $sql = 'SELECT clave_usuario FROM usuarios WHERE id_usuario = ?';

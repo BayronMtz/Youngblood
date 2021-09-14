@@ -293,6 +293,15 @@ class Clientes extends Validator
         return Database::getRows($sql, $params);
     }
 
+    //Carga los intentos fallidos
+    public function readFails()
+    {
+        $sql = 'SELECT*FROM bitacora WHERE id_cliente = ?';
+        $params = array($_SESSION['id_cliente']);
+        return Database::getRows($sql, $params);
+    }
+
+
     public function changePassword()
     {
         $hash = password_hash($this->clave, PASSWORD_DEFAULT);

@@ -54,6 +54,7 @@ class Public_Page
                                         <li><a href="#" onclick="openProfileDialog()"><i class="material-icons">face</i>Editar perfil</a></li>
                                         <li><a href="#" onclick="openPasswordDialog()"><i class="material-icons">lock</i>Cambiar clave</a></li>
                                         <li><a href="#" onclick="openDevicesDialog()"><i class="material-icons">devices</i>Dispositivos</a></li>
+                                        <li><a href="#" onclick="openSecurityDialog()"><i class="material-icons">security</i>Seguridad</a></li>
                                         <li><a href="#" onclick="logOut()"><i class="material-icons">clear</i>Salir</a></li>
                                     </ul>
                                 </div>
@@ -70,6 +71,7 @@ class Public_Page
                             <li><a href="#" onclick="openProfileDialog()">Editar perfil</a></li>
                             <li><a href="#" onclick="openPasswordDialog()">Cambiar clave</a></li>
                             <li><a href="#" onclick="openDevicesDialog()">Dispositivos</a></li>
+                            <li><a href="#" onclick="openSecurityDialog()">Seguridad</a></li>
                             <li><a href="#" onclick="logOut()">Salir</a></li>
                         </ul>
                     </header>
@@ -182,6 +184,51 @@ class Public_Page
                         </div>
                     </div>
         
+                    <!-- Componente Modal para mostrar el formulario de seguridad -->
+                    <div id="security-modal" class="modal">
+                        <div class="modal-content">
+                            <h4 class="center-align">Dispositivos</h4>
+                            <form method="post" id="security-form">
+                                <div class="row">
+                                    <div class="col s12 m6">
+                                        <blockquote>
+                                        Intentos fallidos de sesión: <b>14</b>
+                                        </blockquote>
+                                    </div>
+                                    <div class="col s12 m6">
+                                        <p>
+                                            <label>
+                                            <input id="checkbox_autenticacion" type="checkbox" />
+                                            <span>Inicio de sesión en dos pasos</span>
+                                            </label>
+                                        </p>
+                                        <input type="hidden" value="no" id="checkboxValue"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!-- Tabla para mostrar los registros existentes -->
+                                    <table class="highlight" id="data-table">
+                                        <!-- Cabeza de la tabla para mostrar los títulos de las columnas -->
+                                        <thead>
+                                            <tr>
+                                                <th>FECHA</th>
+                                                <th>HORA</th>
+                                                <th>OBSERVACIÓN</th>
+                                            </tr>
+                                        </thead>
+                                        <!-- Cuerpo de la tabla para mostrar un registro por fila -->
+                                        <tbody id="tbody-security">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row center-align">
+                                    <button type="submit" class="btn waves-effect blue tooltipped" data-tooltip="Guardar Cambios"><i class="material-icons">save</i></button>
+                                    <a href="#" class="btn waves-effect grey tooltipped modal-close" data-tooltip="Cancelar"><i class="material-icons">cancel</i></a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
                     <main>
                 ');
             } else {
