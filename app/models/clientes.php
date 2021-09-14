@@ -269,6 +269,30 @@ class Clientes extends Validator
         }
     }
 
+    //Registrar dispositivo
+    public function registerDevice()
+    {
+        $sql = 'INSERT INTO dispositivos_cliente(dispositivo, fecha, hora, id_cliente) VALUES (?,current_date,current_time,?)';
+        $params = array(php_uname(), $_SESSION['id_cliente']);
+        return Database::executeRow($sql, $params);
+    }
+
+    //Verificar si el dispositivo ya existe
+    public function checkDevice()
+    {
+        $sql = 'SELECT*FROM dispositivos_cliente WHERE dispositivo = ? AND id_cliente = ?';
+        $params = array(php_uname(), $_SESSION['id_cliente']);
+        return Database::getRow($sql, $params);
+    }
+
+    //Obtener las sesiones de un dispositivo
+    public function getDevices()
+    {
+        $sql = 'SELECT*FROM dispositivos_cliente WHERE id_cliente = ?';
+        $params = array($_SESSION['id_cliente']);
+        return Database::getRows($sql, $params);
+    }
+
     public function changePassword()
     {
         $hash = password_hash($this->clave, PASSWORD_DEFAULT);

@@ -31,6 +31,36 @@ if (isset($_GET['action'])) {
                     }
                 }
                 break;
+            //Registrar dispositivo
+            case 'registerDevice':
+                if ($cliente->checkDevice()) {
+                    $result['status'] = 1;
+                    $result['message'] = 'Dispositivo registrado anteriormente.';
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        if ($cliente->registerDevice()) {
+                            $result['status'] = 1;
+                            $result['message'] = 'Dispositivo registrado.';
+                        } else {
+                            $result['exception'] = Database::getException();
+                        }
+                    }
+                }
+                break;
+            //Obtener sesiones
+            case 'getDevices':
+                if ($result['dataset'] = $cliente->getDevices()) {
+                    $result['status'] = 1;
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        $result['exception'] = 'Usted no posee sesiónes registradas.';
+                    }   
+                }
+                break;
             case 'editProfile':
                 $_POST = $cliente->validateForm($_POST);
                 if ($cliente->setNombres($_POST['nombres_perfil'])) {
@@ -74,7 +104,7 @@ if (isset($_GET['action'])) {
                                         $result['exception'] = Database::getException();
                                     }
                                 } else {
-                                    $result['exception'] = $usuario->getPasswordError();
+                                    $result['exception'] = $cliente->getPasswordError();
                                 }
                             } else {
                                 $result['exception'] = 'Claves nuevas diferentes';

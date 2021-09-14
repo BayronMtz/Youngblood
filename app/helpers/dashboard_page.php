@@ -58,6 +58,7 @@ class Dashboard_Page
                                     <ul id="dropdown" class="dropdown-content">
                                         <li><a href="#" onclick="openProfileDialog()"><i class="material-icons">face</i>Editar perfil</a></li>
                                         <li><a href="#" onclick="openPasswordDialog()"><i class="material-icons">lock</i>Cambiar clave</a></li>
+                                        <li><a href="#" onclick="openDevicesDialog()"><i class="material-icons">devices</i>Dispositivos</a></li>
                                         <li><a href="#" onclick="logOut()"><i class="material-icons">clear</i>Salir</a></li>
                                     </ul>
                                 </div>
@@ -75,6 +76,7 @@ class Dashboard_Page
                         <ul id="dropdown-mobile" class="dropdown-content">
                             <li><a href="#" onclick="openProfileDialog()">Editar perfil</a></li>
                             <li><a href="#" onclick="openPasswordDialog()">Cambiar clave</a></li>
+                            <li><a href="#" onclick="openDevicesDialog()">Dispositivos</a></li>
                             <li><a href="#" onclick="logOut()">Salir</a></li>
                         </ul>
                     </header>
@@ -124,6 +126,7 @@ class Dashboard_Page
                 <script type="text/javascript" src="../../app/helpers/components.js"></script>
                 <script type="text/javascript" src="../../app/controllers/dashboard/initialization.js"></script>
                 <script type="text/javascript" src="../../app/controllers/dashboard/account.js"></script>
+                <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
                 <script type="text/javascript" src="../../app/controllers/dashboard/' . $controller . '"></script>
             ';
         } else {
@@ -245,6 +248,34 @@ class Dashboard_Page
                         <div class="row center-align">
                             <a href="#" class="btn waves-effect grey tooltipped modal-close" data-tooltip="Cancelar"><i class="material-icons">cancel</i></a>
                             <button type="submit" class="btn waves-effect blue tooltipped" data-tooltip="Guardar"><i class="material-icons">save</i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Componente Modal para mostrar el formulario de dispositivos -->
+            <div id="devices-modal" class="modal">
+                <div class="modal-content">
+                    <h4 class="center-align">Dispositivos</h4>
+                    <form method="post" id="device-form">
+                        <div class="row">
+                            <!-- Tabla para mostrar los registros existentes -->
+                            <table class="highlight" id="data-table">
+                                <!-- Cabeza de la tabla para mostrar los títulos de las columnas -->
+                                <thead>
+                                    <tr>
+                                        <th>DISPOSITIVO</th>
+                                        <th>FECHA</th>
+                                        <th>HORA</th>
+                                    </tr>
+                                </thead>
+                                <!-- Cuerpo de la tabla para mostrar un registro por fila -->
+                                <tbody id="tbody-devices">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row center-align">
+                            <a href="#" class="btn waves-effect grey tooltipped modal-close" data-tooltip="Cancelar"><i class="material-icons">cancel</i></a>
                         </div>
                     </form>
                 </div>

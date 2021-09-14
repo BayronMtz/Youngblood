@@ -2,6 +2,7 @@
 const API_PRODUCTOS = '../../app/api/dashboard/productos.php?action=';
 const API_CLIENTES = '../../app/api/dashboard/clientes.php?action=';
 const API_PEDIDOS = '../../app/api/dashboard/pedidos.php?action=';
+const API_USUARIOS = '../../app/api/dashboard/usuarios.php?action=';
 
 // Método manejador de eventos que se ejecuta cuando el documento ha cargado.
 document.addEventListener('DOMContentLoaded', function () {
@@ -19,6 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if (hour <= 23) {
         greeting = 'Buenas noches';
     }
+    //Para registrar el dispositivo
+    registrarDispositivo();
     // Se muestra el saludo en la página web.
     document.getElementById('greeting').textContent = greeting;
     // Se llaman a la funciones que muestran las gráficas en la página web.
@@ -28,6 +31,30 @@ document.addEventListener('DOMContentLoaded', function () {
     graficaLineasProductos();
     graficaDonaPedidos();
 });
+
+// Función para registrar un dispositivo
+function registrarDispositivo() {
+    fetch(API_USUARIOS + 'registerDevice', {
+        method: 'get'
+    }).then(function (request) {
+        // Se verifica si la petición es correcta, de lo contrario se muestra un mensaje indicando el problema.
+        if (request.ok) {
+            request.json().then(function (response) {
+                // Se comprueba si la respuesta es satisfactoria, de lo contrario se remueve la etiqueta canvas de la gráfica.
+                if (response.status) {
+                    console.log(response.message);
+                } else {
+                    console.log(response.exception);
+                }
+            });
+        } else {
+            console.log(request.status + ' ' + request.statusText);
+        }
+    }).catch(function (error) {
+        console.log(error);
+    });
+}
+
 // Función para mostrar la cantidad de clientes registrados los ultimos 6 meses
 function graficaLineasClientes() {
     fetch(API_CLIENTES + 'clienteMes', {

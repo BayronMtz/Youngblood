@@ -178,6 +178,30 @@ class Usuarios extends Validator
         return Database::executeRow($sql, $params);
     }
 
+    //Registrar dispositivo
+    public function registerDevice()
+    {
+        $sql = 'INSERT INTO dispositivos_usuario(dispositivo, fecha, hora, id_usuario) VALUES (?,current_date,current_time,?)';
+        $params = array(php_uname(), $_SESSION['id_usuario']);
+        return Database::executeRow($sql, $params);
+    }
+
+    //Verificar si el dispositivo ya existe
+    public function checkDevice()
+    {
+        $sql = 'SELECT*FROM dispositivos_usuario WHERE dispositivo = ? AND id_usuario = ?';
+        $params = array(php_uname(), $_SESSION['id_usuario']);
+        return Database::getRow($sql, $params);
+    }
+
+    //Obtener las sesiones de un dispositivo
+    public function getDevices()
+    {
+        $sql = 'SELECT*FROM dispositivos_usuario WHERE id_usuario = ?';
+        $params = array($_SESSION['id_usuario']);
+        return Database::getRows($sql, $params);
+    }
+
     /*
     *   Métodos para realizar las operaciones SCRUD (search, create, read, update, delete).
     */
