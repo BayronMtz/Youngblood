@@ -286,15 +286,16 @@ if (isset($_GET['action'])) {
                             $datos = $usuario->verificarIntentos();
                             if($datos['intentos'] < 3){
                                 if($usuario->actualizarIntentos($datos['intentos'] + 1)) {
-                                    $result['exception'] = 'La contraseña es incorrecta';
+                                    if($usuario->accionUsuario('Intento fallido N°'.$datos['intentos'] + 1.)) {
+                                        $result['exception'] = 'La contraseña es incorrecta';
+                                    }
                                 }
                             } else {
                                 if($usuario->actualizarEstado(0)){
-                                    $result['exception'] = 'Se ha bloqueado el usuario por intentos fallidos';
-                                } else {
-                                    $result['exception'] = 'El usuario debe ser bloqueado';
+                                    if($usuario->accionUsuario('Se ha bloqueado el usuario')) {
+                                        $result['exception'] = 'Se ha bloqueado el usuario por intentos fallidos';
+                                    } 
                                 }
-                                
                             }
                         }
                     } else {

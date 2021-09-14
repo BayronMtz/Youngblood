@@ -321,9 +321,9 @@ class Clientes extends Validator
     {
         // Se encripta la clave por medio del algoritmo bcrypt que genera un string de 60 caracteres.
         $hash = password_hash($this->clave, PASSWORD_DEFAULT);
-        $sql = 'INSERT INTO clientes(nombres_cliente, apellidos_cliente, correo_cliente, dui_cliente, telefono_cliente, nacimiento_cliente, direccion_cliente, clave_cliente, fecha_registro, alias_usuario)
-                VALUES(?, ?, ?, ?, ?, ?, ?, ?, current_date, ?)';
-        $params = array($this->nombres, $this->apellidos, $this->correo, $this->dui, $this->telefono, $this->nacimiento, $this->direccion, $hash, $this->usuario);
+        $sql = 'INSERT INTO clientes(nombres_cliente, apellidos_cliente, correo_cliente, dui_cliente, telefono_cliente, nacimiento_cliente, direccion_cliente, clave_cliente, fecha_registro, alias_usuario,intentos,fecha_clave)
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?, current_date, ?,?,current_date)';
+        $params = array($this->nombres, $this->apellidos, $this->correo, $this->dui, $this->telefono, $this->nacimiento, $this->direccion, $hash, $this->usuario,0);
         return Database::executeRow($sql, $params);
     }
 
@@ -359,6 +359,48 @@ class Clientes extends Validator
         $sql = 'DELETE FROM clientes
                 WHERE id_cliente = ?';
         $params = array($this->id);
+        return Database::executeRow($sql, $params);
+    }
+
+    public function verificarEstado(){
+        if ($this->estado == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function verificarIntentos(){
+        $sql = 'SELECT intentos
+        FROM clientes
+        WHERE id_cliente = ?';
+        $params = array($this->id);
+        return Database::getRow($sql, $params);
+    }
+
+    public function actualizarIntentos($intentos)
+    {
+        $sql = 'UPDATE clientes 
+                SET intentos = ?
+                WHERE id_cliente = ?';
+        $params = array($intentos, $this->id);
+        return Database::executeRow($sql, $params);
+    }
+
+    public function actualizarEstado($estado)
+    {
+        $sql = 'UPDATE clientes
+                SET estado_cliente = ?
+                WHERE id_cliente = ?';
+        $params = array($estado, $this->id);
+        return Database::executeRow($sql, $params);
+    }
+
+    public function accionCliente($observacion)
+    {
+        $sql = 'INSERT INTO bitacora(id_cliente,fecha,hora,observacion) 
+                VALUES(?,current_date,current_time,?)';
+        $params = array($this->id, $observacion);
         return Database::executeRow($sql, $params);
     }
 }

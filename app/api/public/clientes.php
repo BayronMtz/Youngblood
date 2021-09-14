@@ -184,16 +184,31 @@ if (isset($_GET['action'])) {
                 if ($cliente->checkUser($_POST['usuario'])) {
                     if ($cliente->getEstado()) {
                         if ($cliente->checkPassword($_POST['clave'])) {
-                            $_SESSION['id_cliente'] = $cliente->getId();
-                            $_SESSION['correo_cliente'] = $cliente->getCorreo();
-                            $_SESSION['alias_cliente'] = $cliente->getUsuario();
-                            $result['status'] = 1;
-                            $result['message'] = 'Autenticación correcta';
+                            if($cliente->actualizarIntentos(0)){
+                                $_SESSION['id_cliente'] = $cliente->getId();
+                                $_SESSION['id_cliente_tmp'] = $cliente->getId();
+                                $_SESSION['correo_cliente'] = $cliente->getCorreo();
+                                $_SESSION['alias_cliente'] = $cliente->getUsuario();
+                                $result['status'] = 1;
+                                $result['message'] = 'Autenticación correcta';
+                            }
                         } else {
-                            if (Database::getException()) {
-                                $result['exception'] = Database::getException();
+                            $datos = $cliente->verificarIntentos();
+                            if($datos['intentos'] < 3){
+                                if($cliente->actualizarIntentos($datos['intentos'] + 1)) {
+                                    if($cliente->accionCliente('Intento fallido N°'.$datos['intentos'] + 1.)) {
+                                        $result['exception'] = 'La contraseña es incorrecta';
+                                    }
+                                }
                             } else {
-                                $result['exception'] = 'Clave incorrecta';
+                                if($cliente->actualizarEstado(0)){
+                                    if($cliente->accionCliente('Se ha bloqueado el usuario del cliente')) {
+                                        $result['exception'] = 'Se ha bloqueado el usuario por intentos fallidos';
+                                    } 
+                                    
+                                } else {
+                                    $result['exception'] = 'aqui';
+                                }
                             }
                         }
                     } else {

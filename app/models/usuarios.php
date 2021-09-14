@@ -270,4 +270,12 @@ class Usuarios extends Validator
         $params = array($estado, $this->id);
         return Database::executeRow($sql, $params);
     }
+
+    public function accionUsuario($observacion)
+    {
+        $sql = 'INSERT INTO bitacora(id_usuario,fecha,hora,observacion) 
+                VALUES(?,current_date,current_time,?)';
+        $params = array($this->id, $observacion);
+        return Database::executeRow($sql, $params);
+    }
 }
