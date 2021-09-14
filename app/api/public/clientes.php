@@ -297,7 +297,7 @@ if (isset($_GET['action'])) {
                                         $result['status'] = 1;
                                         $result['message'] = 'Contraseña cambiada correctamente';
                                         unset($_SESSION['id_cliente_tmp']);
-                                        $_SESSION['idcliente'] = $cliente->getId();
+                                        $_SESSION['id_cliente'] = $cliente->getId();
                                         $cliente->actualizarFecha();
                                     } else {
                                         $result['exception'] = Database::getException();

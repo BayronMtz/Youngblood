@@ -404,7 +404,7 @@ if (isset($_GET['action'])) {
                                         $result['status'] = 1;
                                         $result['message'] = 'Contraseña cambiada correctamente';
                                         unset($_SESSION['id_usuario_tmp']);
-                                        $_SESSION['idusuario'] = $usuario->getId();
+                                        $_SESSION['id_usuario'] = $usuario->getId();
                                         $usuario->actualizarFecha();
                                     } else {
                                         $result['exception'] = Database::getException();
