@@ -49,8 +49,11 @@ class Public_Page
                                         <li><a href="cart.php"><i class="material-icons left">shopping_cart</i>Carrito</a></li>
                                         <li><a href="pedidos.php"><i class="material-icons left">event_note</i>Mis Pedidos</a></li>
                                         <li><a href="#" class="dropdown-trigger" data-target="dropdown"><i class="material-icons left">verified_user</i>Cuenta: <b>' . $_SESSION['alias_cliente'] . '</b></a></li>
-                                        <li><a href="#" onclick="logOut()"><i class="material-icons left">close</i>Cerrar sesión</a></li>
-
+                                    </ul>
+                                    <ul id="dropdown" class="dropdown-content">
+                                        <li><a href="#" onclick="openProfileDialog()"><i class="material-icons">face</i>Editar perfil</a></li>
+                                        <li><a href="#" onclick="openPasswordDialog()"><i class="material-icons">lock</i>Cambiar clave</a></li>
+                                        <li><a href="#" onclick="logOut()"><i class="material-icons">clear</i>Salir</a></li>
                                     </ul>
                                 </div>
                             </nav>
@@ -60,10 +63,95 @@ class Public_Page
                             <li><a href="index.php"><i class="material-icons left">search</i>Buscar producto</a></li>
                             <li><a href="cart.php"><i class="material-icons left">shopping_cart</i>Carrito</a></li>
                             <li><a href="pedidos.php"><i class="material-icons left">event_note</i>Mis Pedidos</a></li>
-                            <li><a href="#" class="dropdown-trigger" data-target="dropdown"><i class="material-icons left">verified_user</i>Cuenta: <b>' . $_SESSION['alias_cliente'] . '</b></a></li>
-                            <li><a href="#" onclick="logOut()"><i class="material-icons left">close</i>Cerrar sesión</a></li>
+                            <li><a class="dropdown-trigger" href="#" data-target="dropdown-mobile"><i class="material-icons">verified_user</i>Cuenta: <b>' . $_SESSION['alias_usuario'] . '</b></a></li>
+                        </ul>
+                        <ul id="dropdown-mobile" class="dropdown-content">
+                            <li><a href="#" onclick="openProfileDialog()">Editar perfil</a></li>
+                            <li><a href="#" onclick="openPasswordDialog()">Cambiar clave</a></li>
+                            <li><a href="#" onclick="logOut()">Salir</a></li>
                         </ul>
                     </header>
+
+                    <!-- Componente Modal para mostrar el formulario de editar perfil -->
+                    <div id="profile-modal" class="modal">
+                        <div class="modal-content">
+                            <h4 class="center-align">Editar perfil</h4>
+                            <form method="post" id="profile-form">
+                                <div class="row">
+                                    <div class="input-field col s12 m6">
+                                        <i class="material-icons prefix">person</i>
+                                        <input id="nombres_perfil" type="text" name="nombres_perfil" class="validate" required/>
+                                        <label for="nombres_perfil">Nombres</label>
+                                    </div>
+                                    <div class="input-field col s12 m6">
+                                        <i class="material-icons prefix">person</i>
+                                        <input id="apellidos_perfil" type="text" name="apellidos_perfil" class="validate" required/>
+                                        <label for="apellidos_perfil">Apellidos</label>
+                                    </div>
+                                    <div class="input-field col s12 m6">
+                                        <i class="material-icons prefix">email</i>
+                                        <input id="correo_perfil" type="email" name="correo_perfil" class="validate" required/>
+                                        <label for="correo_perfil">Correo</label>
+                                    </div>
+                                    <div class="input-field col s12 m6">
+                                        <i class="material-icons prefix">person_pin</i>
+                                        <input id="alias_perfil" type="text" name="alias_perfil" class="validate" required/>
+                                        <label for="alias_perfil">Alias</label>
+                                    </div>
+                                </div>
+                                <div class="row center-align">
+                                    <a href="#" class="btn waves-effect grey tooltipped modal-close" data-tooltip="Cancelar"><i class="material-icons">cancel</i></a>
+                                    <button type="submit" class="btn waves-effect blue tooltipped" data-tooltip="Guardar"><i class="material-icons">save</i></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Componente Modal para mostrar el formulario de cambiar contraseña -->
+                    <div id="password-modal" class="modal">
+                        <div class="modal-content">
+                            <h4 class="center-align">Cambiar contraseña</h4>
+                            <label>Su contraseña debe como mínimo ocho caracteres entre
+                                alfanuméricos y especiales (al menos uno de cada uno) y que sea diferente al nombre de usuario</label>
+                            
+                            <form method="post" id="password-form">
+                                <div class="row">
+                                    <div class="input-field col s12 m6 offset-m3">
+                                        <i class="material-icons prefix">security</i>
+                                        <input id="clave_actual" type="password" name="clave_actual" class="validate" required/>
+                                        <label for="clave_actual">Clave actual</label>
+                                    </div>
+                                </div>
+                                <div class="row center-align">
+                                    <label>CLAVE NUEVA</label>
+                                </div>
+                                <div class="row">
+                                    <div class="input-field col s12 m6">
+                                        <i class="material-icons prefix">security</i>
+                                        <input id="clave_nueva_1" type="password" name="clave_nueva_1" class="validate" required/>
+                                        <label for="clave_nueva_1">Clave</label>
+                                    </div>
+                                    <div class="input-field col s12 m6">
+                                        <i class="material-icons prefix">security</i>
+                                        <input id="clave_nueva_2" type="password" name="clave_nueva_2" class="validate" required/>
+                                        <label for="clave_nueva_2">Confirmar clave</label>
+                                    </div>
+                                </div>
+                                <div class="row center-align">
+                                    <p>
+                                        <label>
+                                        <input type="checkbox" onchange="showHidePassword(\'checkboxContraseña\', \'clave_actual\',\'clave_nueva_1\',\'clave_nueva_2\')" id="checkboxContraseña" />
+                                        <span>Mostrar Contraseña</span>
+                                        </label>
+                                    </p>
+                                </div>
+                                <div class="row center-align">
+                                    <a href="#" class="btn waves-effect grey tooltipped modal-close" data-tooltip="Cancelar"><i class="material-icons">cancel</i></a>
+                                    <button type="submit" class="btn waves-effect blue tooltipped" data-tooltip="Guardar"><i class="material-icons">save</i></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                     <main>
                 ');
             } else {
