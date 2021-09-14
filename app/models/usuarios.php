@@ -342,4 +342,11 @@ class Usuarios extends Validator
         $params = array($this->id);
         return Database::executeRow($sql, $params);
     }
+
+    public function checkEmail()
+    {
+        $sql = 'SELECT correo_usuario,id_usuario FROM usuarios WHERE correo_usuario = ?';
+        $params = array($this->correo);
+        return Database::getRow($sql, $params);
+    }
 }

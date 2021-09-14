@@ -3,6 +3,18 @@ require_once('../../helpers/database.php');
 require_once('../../helpers/validator.php');
 require_once('../../models/usuarios.php');
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+require '../../../libraries/phpmailer65/src/Exception.php';
+require '../../../libraries/phpmailer65/src/PHPMailer.php';
+require '../../../libraries/phpmailer65/src/SMTP.php';
+
+//Creando instancia para mandar correo
+$mail = new PHPMailer(true);
+//To load the Spanish version
+$mail->setLanguage('es', '../../../libraries/phpmailer65/language');
+
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
     // Se crea una sesión o se reanuda la actual para poder utilizar variables de sesión en el script.
@@ -418,6 +430,95 @@ if (isset($_GET['action'])) {
                         }
                     } else {
                         $result['exception'] = 'Clave actual incorrecta';
+                    }
+                } else {
+                    $result['exception'] = 'Usuario incorrecto';
+                }
+                break;
+            case 'validateEmail':
+                $_POST = $usuario->validateForm($_POST);
+                if ($usuario->setCorreo($_POST['txtCorreo'])) {
+                    if ($correo = $usuario->checkEmail()) {
+                        if ($correo['correo_usuario'] == $_POST['txtCorreo']) {
+                            $_SESSION['id_usuario_tmp'] = $correo['id_usuario'];
+                            $_SESSION['correo_usuario'] = $correo['correo_usuario'];
+                            $result['status'] = 1;
+                            $result['message'] = 'Correo verificado.';
+                        } else {
+                            $result['exception'] = 'El correo electrónico ingresado no coincide con su cuenta.';
+                        }
+                    } else {
+                        if (Database::getException()) {
+                            $result['exception'] = Database::getException();
+                        } else {
+                            $result['exception'] = 'No hay correo';
+                        }
+                    }
+                } else {
+                    $result['exception'] = 'Id pendiente de ingresar.';
+                }
+                break;
+            case 'sendEmail':
+                $_SESSION['codigo_email'] = random_int(100, 999999);
+                try {
+                        
+                    //Ajustes del servidor
+                    $mail->SMTPDebug = 0;                   
+                    $mail->isSMTP();                                            
+                    $mail->Host       = 'smtp.gmail.com';                     
+                    $mail->SMTPAuth   = true;                                   
+                    $mail->Username   = 'polusmarket2021@gmail.com';                     
+                    $mail->Password   = 'polus123';                               
+                    $mail->SMTPSecure = 'tls';            
+                    $mail->Port       = 587;                                    
+                
+                    //Receptores
+                    $mail->setFrom('polusmarket2021@gmail.com', 'Polus Support');
+                    $mail->addAddress($_SESSION['correo_usuario']);    
+                
+                    //Contenido
+                    $mail->isHTML(true);                                  //Set email format to HTML
+                    $mail->Subject = 'Codigo de Verificación';
+                    $mail->Body    = 'Tu código de verificación es: <b>' . $_SESSION['codigo_email'] . '</b>.';
+                    $mail->AltBody = 'Tu código de verificación es: ' . $_SESSION['codigo_email'] . '.';
+                
+                    if($mail->send()){
+                        $result['status'] = 1;
+                        $result['message'] = 'Correo verificado correctamente';
+                    }
+                } catch (Exception $e) {
+                    $result['exception'] = $mail->ErrorInfo;
+                }
+                break;
+            case 'validateCode':
+                $_POST = $usuario->validateForm($_POST);
+                if ($_SESSION['codigo_email'] == $_POST['txtCodigo']) {
+                    unset($_SESSION['codigo_email']);
+                    $result['status'] = 1;
+                    $result['message'] = 'Código verificado correctamente.';
+                } else {
+                    $result['exception'] = 'El código que usted ha ingresado es invalido.';
+                }
+                
+                break;
+            case 'changePasswordOut':
+                if ($usuario->setId($_SESSION['id_usuario_tmp'])) {
+                    $_POST = $usuario->validateForm($_POST);
+                    if ($_POST['clave_nueva_1'] == $_POST['clave_nueva_2']) {
+                        if ($usuario->setClave($_POST['clave_nueva_1'])) {
+                            if ($usuario->changePasswordOut()) {
+                                $result['status'] = 1;
+                                $result['message'] = 'Contraseña cambiada correctamente';
+                                unset($_SESSION['id_usuario_tmp']);
+                                $usuario->actualizarFecha();
+                            } else {
+                                $result['exception'] = Database::getException();
+                            }
+                        } else {
+                            $result['exception'] = $usuario->getPasswordError();
+                        }
+                    } else {
+                        $result['exception'] = 'Claves nuevas diferentes';
                     }
                 } else {
                     $result['exception'] = 'Usuario incorrecto';
