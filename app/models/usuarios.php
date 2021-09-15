@@ -128,10 +128,11 @@ class Usuarios extends Validator
     */
     public function checkUser($alias)
     {
-        $sql = 'SELECT id_usuario,estado_usuario FROM usuarios WHERE alias_usuario = ?';
+        $sql = 'SELECT id_usuario,estado_usuario,correo_usuario FROM usuarios WHERE alias_usuario = ?';
         $params = array($alias);
         if ($data = Database::getRow($sql, $params)) {
             $this->id = $data['id_usuario'];
+            $this->correo = $data['correo_usuario'];
             $this->alias = $alias;
             $this->estado = $data['estado_usuario'];
             return true;
@@ -252,9 +253,9 @@ class Usuarios extends Validator
         // Se encripta la clave por medio del algoritmo bcrypt que genera un string de 60 caracteres.
         $hash = password_hash($this->clave, PASSWORD_DEFAULT);
         $sql = 'INSERT INTO usuarios(nombres_usuario, apellidos_usuario, correo_usuario, alias_usuario, clave_usuario,
-                                    intentos, estado_usuario,fecha_clave)
-                VALUES(?, ?, ?, ?, ?,?,?,current_date)';
-        $params = array($this->nombres, $this->apellidos, $this->correo, $this->alias, $hash,0,1);
+                                    intentos, estado_usuario,fecha_clave,dobleverificacion)
+                VALUES(?, ?, ?, ?, ?,?,?,current_date, ?)';
+        $params = array($this->nombres, $this->apellidos, $this->correo, $this->alias, $hash,0,1, 'no');
         return Database::executeRow($sql, $params);
     }
 

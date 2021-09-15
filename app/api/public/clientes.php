@@ -22,13 +22,14 @@ if (isset($_GET['action'])) {
     // Se instancia la clase correspondiente.
     $cliente = new Clientes;
     // Se declara e inicializa un arreglo para guardar el resultado que retorna la API.
-    $result = array('status' => 0, 'recaptcha' => 0, 'message' => null, 'exception' => null);
+    $result = array('status' => 0, 'recaptcha' => 0,'auth' => 0, 'message' => null, 'exception' => null);
     // Se verifica si existe una sesión iniciada como cliente para realizar las acciones correspondientes.
     if (isset($_SESSION['id_cliente'])) {
         // Se compara la acción a realizar cuando un cliente ha iniciado sesión.
         switch ($_GET['action']) {
             case 'logOut':
                 unset($_SESSION['id_cliente']);
+                unset($_SESSION['alias_usuario']);
                 $result['message'] = 'Sesión cerrada correctamente.';
                 $result['status'] = 1;
                 break;
@@ -271,6 +272,51 @@ if (isset($_GET['action'])) {
                     $result['exception'] = 'Ocurrió un problema al cargar el reCAPTCHA';
                 }
                 break;
+            case 'sendCode':
+                $_SESSION['codigo'] = random_int(100, 999999);
+                try {
+                        
+                    //Ajustes del servidor
+                    $mail->SMTPDebug = 0;                   
+                    $mail->isSMTP();                                            
+                    $mail->Host       = 'smtp.gmail.com';                     
+                    $mail->SMTPAuth   = true;                                   
+                    $mail->Username   = '20190145@ricaldone.edu.sv';                     
+                    $mail->Password   = '42861798';                               
+                    $mail->SMTPSecure = 'tls';            
+                    $mail->Port       = 587;                                    
+                
+                    //Receptores
+                    $mail->setFrom('20190145@ricaldone.edu.sv', 'Youngblood Support');
+                    $mail->addAddress($_SESSION['correo_cliente']);    
+                
+                    //Contenido
+                    $mail->isHTML(true);                                  //Set email format to HTML
+                    $mail->Subject = 'Codigo de Verificación';
+                    $mail->Body    = 'Tu código de verificación es: <b>' . $_SESSION['codigo'] . '</b>.';
+                    $mail->AltBody = 'Tu código de verificación es: ' . $_SESSION['codigo'] . '.';
+                
+                    if($mail->send()){
+                        $result['status'] = 1;
+                        $result['message'] = 'Correo enviado correctamente';
+                    }
+                } catch (Exception $e) {
+                    $result['exception'] = $mail->ErrorInfo;
+                }
+                break;
+            case 'checkCode':
+                $_POST = $cliente->validateForm($_POST);
+                if ($_POST['codigo'] == $_SESSION['codigo']) {
+                    unset($_SESSION['codigo']);
+                    $_SESSION['id_cliente'] = $_SESSION['id_cliente_temp'];
+                    unset($_SESSION['id_cliente_temp']);
+                    $result['status'] = 1;
+                    $result['message'] = 'Sesión iniciada correctamente.';
+                } else {
+                    $result['exception'] = 'El código ingresado es incorrecto.';
+                }
+                
+                break;
             case 'logIn':
                 $_POST = $cliente->validateForm($_POST);
                 if ($cliente->checkUser($_POST['usuario'])) {
@@ -281,8 +327,25 @@ if (isset($_GET['action'])) {
                                     $_SESSION['id_cliente'] = $cliente->getId();
                                     $_SESSION['correo_cliente'] = $cliente->getCorreo();
                                     $_SESSION['alias_usuario'] = $cliente->getUsuario();
-                                    $result['status'] = 1;
-                                    $result['message'] = 'Autenticación correcta';
+                                    //Se captura si el usuario tiene activada la verificacion en dos pasos
+                                    if ($data = $cliente->checkAuth()) {
+                                        if ($data['dobleverificacion'] == 'si') {
+                                            $_SESSION['id_cliente_temp'] = $cliente->getId();
+                                            unset($_SESSION['id_cliente']);
+                                            $result['status'] = 1;
+                                            $result['auth'] = 1;
+                                            $result['message'] = 'Usted posee la verificacion en dos pasos activada.';
+                                        } else {
+                                            $result['status'] = 1;
+                                            $result['message'] = 'Autenticación correcta';
+                                        }
+                                    } else {
+                                       if (Database::getException()) {
+                                           $result['exception'] = Database::getException();
+                                       } else {
+                                           $result['exception'] = 'Por alguna razón usted no posee ninguna preferencia.';
+                                       }
+                                    }
                                 } 
                             } else {
                                 $result['error'] = 1;

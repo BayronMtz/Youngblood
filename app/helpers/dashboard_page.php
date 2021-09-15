@@ -92,7 +92,8 @@ class Dashboard_Page
             // Se verifica si la página web actual es diferente a index.php (Iniciar sesión) y a register.php (Crear primer usuario) para direccionar a index.php, de lo contrario se muestra un menú vacío.
             if ($filename != 'index.php' && $filename != 'register.php' 
                     && $filename != 'cambiar_contra.php' && $filename != 'verificar_email.php'
-                    && $filename != 'verificar_codigo.php' && $filename != 'recuperar_contra.php') {
+                    && $filename != 'verificar_codigo.php' && $filename != 'recuperar_contra.php'
+                    && $filename != 'autenticacion.php') {
                 header('location: index.php');
             } else {
                 // Se imprime el código HTML para el encabezado del documento con un menú vacío cuando sea iniciar sesión o registrar el primer usuario.
@@ -129,6 +130,7 @@ class Dashboard_Page
                 <script type="text/javascript" src="../../resources/js/sweetalert.min.js"></script>
                 <script type="text/javascript" src="../../app/helpers/components.js"></script>
                 <script type="text/javascript" src="../../app/controllers/dashboard/initialization.js"></script>
+                <script type="text/javascript" src="../../app/controllers/dashboard/inactividad.js"></script>
                 <script type="text/javascript" src="../../app/controllers/dashboard/account.js"></script>
                 <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
                 <script type="text/javascript" src="../../app/controllers/dashboard/' . $controller . '"></script>

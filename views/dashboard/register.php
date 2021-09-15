@@ -8,7 +8,7 @@ Dashboard_Page::headerTemplate('Registrar primer usuario');
 <!-- Formulario para registrar al primer usuario del dashboard -->
 <form method="post" id="register-form" autocomplete="off">
     <div class="row">
-        <div class="input-field col s12 m6">
+        <div class="input-field col s12 center-align">
           	<i class="material-icons prefix">person</i>
           	<input id="nombres" type="text" name="nombres" class="validate" required/>
           	<label for="nombres">Nombres</label>
@@ -40,6 +40,12 @@ Dashboard_Page::headerTemplate('Registrar primer usuario');
         </div>
     </div>
     <div class="row center-align">
+        <p>
+            <label>
+            <input type="checkbox" onchange="showHidePassword('checkboxContraseña2', 'clave1', 'clave2')" id="checkboxContraseña2" />
+            <span>Mostrar Contraseña</span>
+            </label>
+        </p>
  	    <button type="submit" class="btn waves-effect blue tooltipped" data-tooltip="Registrar"><i class="material-icons">send</i></button>
     </div>
 </form>

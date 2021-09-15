@@ -35,7 +35,7 @@ class Public_Page
         // Se comprueba si existe una sesión de cliente para mostrar el menú de opciones, de lo contrario se muestra otro menú.
         if (isset($_SESSION['id_cliente'])) {
             // Se verifica si la página web actual es diferente a login.php y register.php, de lo contrario se direcciona a index.php
-            if ($filename != 'login.php' && $filename != 'signin.php' && $filename != 'cambiar_contra.php') {
+            if ($filename != 'login.php' && $filename != 'signin.php' && $filename != 'cambiar_contra.php' && $filename != 'autenticacion.php') {
                 print('
                     <header>
                         <div class="navbar-fixed">
@@ -279,7 +279,66 @@ class Public_Page
     */
     public static function footerTemplate($controller)
     {
-        // Se imprime el código HTML para el pie del documento.
+        if (isset($_SESSION['id_cliente'])) {
+            // Se imprime el código HTML para el pie del documento.
+                print('
+                <!-- Contenedor para mostrar efecto parallax con una altura de 300px e imagen aleatoria -->
+                
+            </main>
+            <footer class="page-footer indigo darken-4">
+                <div class="container">
+                    <div class="row">
+                        <div class="col s12 m6 l6">
+                            <h5 class="white-text">Nosotros</h5>
+                            <p>
+                                <blockquote>
+                                    <a href="#mision" class="modal-trigger white-text"><b>Misión</b></a>
+                                    <span>|</span>
+                                    <a href="#vision" class="modal-trigger white-text"><b>Visión</b></a>
+                                    <span>|</span>
+                                    <a href="#valores" class="modal-trigger white-text"><b>Valores</b></a>
+                                </blockquote>
+                                <blockquote>
+                                    <a href="#terminos" class="modal-trigger white-text"><b>Términos y condiciones</b></a>
+                                </blockquote>
+                            </p>
+                        </div>
+                        <div class="col s12 m6 l6">
+                            <h5 class="white-text">Contáctanos</h5>
+                            <p>
+                                <blockquote>
+                                    <a class="white-text" href="https://www.facebook.com/" target="_blank"><b>facebook</b></a>
+                                    <span>|</span>
+                                    <a class="white-text" href="https://twitter.com/" target="_blank"><b>twitter</b></a>
+                                </blockquote>
+                                <blockquote>
+                                    <a class="white-text" href="https://www.instagram.com/" target="_blank"><b>instagram</b></a>
+                                    <span>|</span>
+                                    <a class="white-text" href="https://www.youtube.com/" target="_blank"><b>youtube</b></a>
+                                </blockquote>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-copyright">
+                    <div class="container">
+                        <span>© YOUNGBLOOD, todos los derechos reservados.</span>
+                        <span class="white-text right">Be Brave, <a class="red-text text-accent-1" href="#"><b>Be Young</b></a></span>
+                    </div>
+                </div>
+            </footer>
+            <script type="text/javascript" src="../../resources/js/materialize.min.js"></script>
+            <script type="text/javascript" src="../../resources/js/sweetalert.min.js"></script>
+            <script type="text/javascript" src="../../app/helpers/components.js"></script>
+            <script type="text/javascript" src="../../app/controllers/public/initialization.js"></script>
+            <script type="text/javascript" src="../../app/controllers/public/inactividad.js"></script>
+            <script type="text/javascript" src="../../app/controllers/public/account.js"></script>
+            <script type="text/javascript" src="../../app/controllers/public/'.$controller.'"></script>
+        </body>
+        </html>
+        ');
+        } else {
+            // Se imprime el código HTML para el pie del documento.
         print('
                     <!-- Contenedor para mostrar efecto parallax con una altura de 300px e imagen aleatoria -->
                     
@@ -334,7 +393,9 @@ class Public_Page
                 <script type="text/javascript" src="../../app/controllers/public/'.$controller.'"></script>
             </body>
             </html>
-        ');
+            ');
+        }
+        
     }
 
     /*
@@ -399,4 +460,3 @@ class Public_Page
         ');
     }
 }
-?>
