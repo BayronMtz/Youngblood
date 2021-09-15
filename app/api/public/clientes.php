@@ -29,6 +29,7 @@ if (isset($_GET['action'])) {
         switch ($_GET['action']) {
             case 'logOut':
                 unset($_SESSION['id_cliente']);
+                unset($_SESSION['alias_usuario']);
                 $result['message'] = 'Sesión cerrada correctamente.';
                 $result['status'] = 1;
                 break;

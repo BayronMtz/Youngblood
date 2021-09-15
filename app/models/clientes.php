@@ -377,9 +377,9 @@ class Clientes extends Validator
     {
         // Se encripta la clave por medio del algoritmo bcrypt que genera un string de 60 caracteres.
         $hash = password_hash($this->clave, PASSWORD_DEFAULT);
-        $sql = 'INSERT INTO clientes(nombres_cliente, apellidos_cliente, correo_cliente, dui_cliente, telefono_cliente, nacimiento_cliente, direccion_cliente, clave_cliente, fecha_registro, alias_usuario,intentos,fecha_clave)
-                VALUES(?, ?, ?, ?, ?, ?, ?, ?, current_date, ?,?,current_date)';
-        $params = array($this->nombres, $this->apellidos, $this->correo, $this->dui, $this->telefono, $this->nacimiento, $this->direccion, $hash, $this->usuario,0);
+        $sql = 'INSERT INTO clientes(nombres_cliente, apellidos_cliente, correo_cliente, dui_cliente, telefono_cliente, nacimiento_cliente, direccion_cliente, clave_cliente, fecha_registro, alias_usuario,intentos,fecha_clave,dobleverificacion)
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?, current_date, ?,?,current_date, ?)';
+        $params = array($this->nombres, $this->apellidos, $this->correo, $this->dui, $this->telefono, $this->nacimiento, $this->direccion, $hash, $this->usuario,0, 'no');
         return Database::executeRow($sql, $params);
     }
 

@@ -117,6 +117,12 @@ Dashboard_Page::headerTemplate('Administrar clientes');
                 </div>
             </div>
             <div class="row center-align">
+                <p>
+                    <label>
+                    <input type="checkbox" onchange="showHidePassword('checkboxContraseña2', 'clave_cliente', 'confirmar_clave')" id="checkboxContraseña2" />
+                    <span>Mostrar Contraseña</span>
+                    </label>
+                </p>
                 <a href="#" class="btn waves-effect grey tooltipped modal-close" data-tooltip="Cancelar"><i class="material-icons">cancel</i></a>
                 <button type="submit" class="btn waves-effect blue tooltipped" data-tooltip="Guardar"><i class="material-icons">save</i></button>
             </div>

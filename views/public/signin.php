@@ -71,6 +71,12 @@ Public_Page::headerTemplate('Registrarse');
         </div>
         <div class="row center-align">
             <div class="col s12">
+                <p>
+                    <label>
+                    <input type="checkbox" onchange="showHidePassword('checkboxContraseña', 'clave_cliente', 'confirmar_clave')" id="checkboxContraseña" />
+                    <span>Mostrar Contraseña</span>
+                    </label>
+                </p>
                 <button type="submit" class="btn waves-effect blue tooltipped" data-tooltip="Registrar"><i class="material-icons">send</i></button>
             </div>
         </div>

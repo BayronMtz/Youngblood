@@ -66,3 +66,18 @@ document.getElementById('register-form').addEventListener('submit', function (ev
         console.log(error);
     });
 });
+
+//Función para mostrar contraseña
+function showHidePassword(checkbox, pass1, pass2) {
+    var check = document.getElementById(checkbox);
+    var password = document.getElementById(pass1);
+    var password2 = document.getElementById(pass2);
+    //Verificando el estado del check
+    if (check.checked == true) {
+        password.type = 'text';
+        password2.type = 'text';
+    } else {
+        password.type = 'password';
+        password2.type = 'password';
+    }
+}

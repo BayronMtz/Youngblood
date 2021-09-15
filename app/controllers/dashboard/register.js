@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', function () {
             request.json().then(function (response) {
                 // Se comprueba si la respuesta es satisfactoria, de lo contrario se muestra un mensaje.
                 if (response.status) {
-                    sweetAlert(3, response.message, 'index.php');
+                    //sweetAlert(3, response.message, 'index.php');
+                    window.location.href = 'index.php';
                 } else {
                     // Se verifica si ocurrió un problema en la base de datos, de lo contrario se continua normalmente.
                     if (response.error) {
@@ -32,6 +33,21 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(error);
     });
 });
+
+//Función para mostrar contraseña
+function showHidePassword(checkbox, pass1, pass2) {
+    var check = document.getElementById(checkbox);
+    var password = document.getElementById(pass1);
+    var password2 = document.getElementById(pass2);
+    //Verificando el estado del check
+    if (check.checked == true) {
+        password.type = 'text';
+        password2.type = 'text';
+    } else {
+        password.type = 'password';
+        password2.type = 'password';
+    }
+}
 
 // Método manejador de eventos que se ejecuta cuando se envía el formulario de registrar.
 document.getElementById('register-form').addEventListener('submit', function (event) {

@@ -40,6 +40,12 @@ Dashboard_Page::headerTemplate('Registrar primer usuario');
         </div>
     </div>
     <div class="row center-align">
+        <p>
+            <label>
+            <input type="checkbox" onchange="showHidePassword('checkboxContraseña2', 'clave1', 'clave2')" id="checkboxContraseña2" />
+            <span>Mostrar Contraseña</span>
+            </label>
+        </p>
  	    <button type="submit" class="btn waves-effect blue tooltipped" data-tooltip="Registrar"><i class="material-icons">send</i></button>
     </div>
 </form>
