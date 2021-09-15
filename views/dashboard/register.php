@@ -8,7 +8,7 @@ Dashboard_Page::headerTemplate('Registrar primer usuario');
 <!-- Formulario para registrar al primer usuario del dashboard -->
 <form method="post" id="register-form" autocomplete="off">
     <div class="row">
-        <div class="input-field col s12 m6">
+        <div class="input-field col s12 center-align">
           	<i class="material-icons prefix">person</i>
           	<input id="nombres" type="text" name="nombres" class="validate" required/>
           	<label for="nombres">Nombres</label>
