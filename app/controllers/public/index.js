@@ -1,5 +1,6 @@
 // Constante para establecer la ruta y parámetros de comunicación con la API.
 const API_CATALOGO = '../../app/api/public/catalogo.php?action=';
+const API_CLIENTES = '../../app/api/public/clientes.php?action=';
 
 // Método manejador de eventos que se ejecuta cuando el documento ha cargado.
 document.addEventListener('DOMContentLoaded', function () {
@@ -7,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     M.Slider.init(document.querySelectorAll('.slider'));
     // Se llama a la función que muestra las categorías disponibles.
     readAllCategorias();
+    registrarDispositivo();
 });
 
 // Función para obtener y mostrar las categorías disponibles.
@@ -61,6 +63,29 @@ function readAllCategorias() {
                 } else {
                     // Se presenta un mensaje de error cuando no existen datos para mostrar.
                     document.getElementById('title').innerHTML = `<i class="material-icons small">cloud_off</i><span class="red-text">${response.exception}</span>`;
+                }
+            });
+        } else {
+            console.log(request.status + ' ' + request.statusText);
+        }
+    }).catch(function (error) {
+        console.log(error);
+    });
+}
+
+// Función para registrar un dispositivo
+function registrarDispositivo() {
+    fetch(API_CLIENTES + 'registerDevice', {
+        method: 'get'
+    }).then(function (request) {
+        // Se verifica si la petición es correcta, de lo contrario se muestra un mensaje indicando el problema.
+        if (request.ok) {
+            request.json().then(function (response) {
+                // Se comprueba si la respuesta es satisfactoria, de lo contrario se remueve la etiqueta canvas de la gráfica.
+                if (response.status) {
+                    console.log(response.message);
+                } else {
+                    console.log(response.exception);
                 }
             });
         } else {

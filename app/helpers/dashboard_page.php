@@ -35,7 +35,7 @@ class Dashboard_Page
         // Se comprueba si existe una sesión de administrador para mostrar el menú de opciones, de lo contrario se muestra un menú vacío.
         if (isset($_SESSION['id_usuario'])) {
             // Se verifica si la página web actual es diferente a index.php (Iniciar sesión) y a register.php (Crear primer usuario) para no iniciar sesión otra vez, de lo contrario se direcciona a main.php
-            if ($filename != 'index.php' && $filename != 'register.php') {
+            if ($filename != 'index.php' && $filename != 'register.php' && $filename != 'cambiar_contra.php') {
                 // Se llama al método que contiene el código de las cajas de dialogo (modals).
                 self::modals();
                 // Se imprime el código HTML para el encabezado del documento con el menú de opciones.
@@ -58,6 +58,8 @@ class Dashboard_Page
                                     <ul id="dropdown" class="dropdown-content">
                                         <li><a href="#" onclick="openProfileDialog()"><i class="material-icons">face</i>Editar perfil</a></li>
                                         <li><a href="#" onclick="openPasswordDialog()"><i class="material-icons">lock</i>Cambiar clave</a></li>
+                                        <li><a href="#" onclick="openDevicesDialog()"><i class="material-icons">devices</i>Dispositivos</a></li>
+                                        <li><a href="#" onclick="openSecurityDialog()"><i class="material-icons">security</i>Seguridad</a></li>
                                         <li><a href="#" onclick="logOut()"><i class="material-icons">clear</i>Salir</a></li>
                                     </ul>
                                 </div>
@@ -75,6 +77,8 @@ class Dashboard_Page
                         <ul id="dropdown-mobile" class="dropdown-content">
                             <li><a href="#" onclick="openProfileDialog()">Editar perfil</a></li>
                             <li><a href="#" onclick="openPasswordDialog()">Cambiar clave</a></li>
+                            <li><a href="#" onclick="openDevicesDialog()">Dispositivos</a></li>
+                            <li><a href="#" onclick="openSecurityDialog()">Seguridad</a></li>
                             <li><a href="#" onclick="logOut()">Salir</a></li>
                         </ul>
                     </header>
@@ -86,7 +90,9 @@ class Dashboard_Page
             }
         } else {
             // Se verifica si la página web actual es diferente a index.php (Iniciar sesión) y a register.php (Crear primer usuario) para direccionar a index.php, de lo contrario se muestra un menú vacío.
-            if ($filename != 'index.php' && $filename != 'register.php') {
+            if ($filename != 'index.php' && $filename != 'register.php' 
+                    && $filename != 'cambiar_contra.php' && $filename != 'verificar_email.php'
+                    && $filename != 'verificar_codigo.php' && $filename != 'recuperar_contra.php') {
                 header('location: index.php');
             } else {
                 // Se imprime el código HTML para el encabezado del documento con un menú vacío cuando sea iniciar sesión o registrar el primer usuario.
@@ -124,6 +130,7 @@ class Dashboard_Page
                 <script type="text/javascript" src="../../app/helpers/components.js"></script>
                 <script type="text/javascript" src="../../app/controllers/dashboard/initialization.js"></script>
                 <script type="text/javascript" src="../../app/controllers/dashboard/account.js"></script>
+                <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
                 <script type="text/javascript" src="../../app/controllers/dashboard/' . $controller . '"></script>
             ';
         } else {
@@ -208,6 +215,9 @@ class Dashboard_Page
             <div id="password-modal" class="modal">
                 <div class="modal-content">
                     <h4 class="center-align">Cambiar contraseña</h4>
+                    <label>Su contraseña debe como mínimo ocho caracteres entre
+                        alfanuméricos y especiales (al menos uno de cada uno) y que sea diferente al nombre de usuario</label>
+                    
                     <form method="post" id="password-form">
                         <div class="row">
                             <div class="input-field col s12 m6 offset-m3">
@@ -232,8 +242,89 @@ class Dashboard_Page
                             </div>
                         </div>
                         <div class="row center-align">
+                            <p>
+                                <label>
+                                <input type="checkbox" onchange="showHidePassword(\'checkboxContraseña\', \'clave_actual\',\'clave_nueva_1\',\'clave_nueva_2\')" id="checkboxContraseña" />
+                                <span>Mostrar Contraseña</span>
+                                </label>
+                            </p>
+                        </div>
+                        <div class="row center-align">
                             <a href="#" class="btn waves-effect grey tooltipped modal-close" data-tooltip="Cancelar"><i class="material-icons">cancel</i></a>
                             <button type="submit" class="btn waves-effect blue tooltipped" data-tooltip="Guardar"><i class="material-icons">save</i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Componente Modal para mostrar el formulario de dispositivos -->
+            <div id="devices-modal" class="modal">
+                <div class="modal-content">
+                    <h4 class="center-align">Dispositivos</h4>
+                    <form method="post" id="device-form">
+                        <div class="row">
+                            <!-- Tabla para mostrar los registros existentes -->
+                            <table class="highlight" id="data-table">
+                                <!-- Cabeza de la tabla para mostrar los títulos de las columnas -->
+                                <thead>
+                                    <tr>
+                                        <th>DISPOSITIVO</th>
+                                        <th>FECHA</th>
+                                        <th>HORA</th>
+                                    </tr>
+                                </thead>
+                                <!-- Cuerpo de la tabla para mostrar un registro por fila -->
+                                <tbody id="tbody-devices">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row center-align">
+                            <a href="#" class="btn waves-effect grey tooltipped modal-close" data-tooltip="Cancelar"><i class="material-icons">cancel</i></a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Componente Modal para mostrar el formulario de seguridad -->
+            <div id="security-modal" class="modal">
+                <div class="modal-content">
+                    <h4 class="center-align">Panel de Seguridad</h4>
+                    <form method="post" id="security-form">
+                        <div class="row">
+                            <div class="col s12 m6">
+                                <blockquote>
+                                Intentos fallidos de sesión: <b id="lblIntentos">14</b>
+                                </blockquote>
+                            </div>
+                            <div class="col s12 m6">
+                                <p>
+                                    <label>
+                                    <input id="checkbox_autenticacion" type="checkbox" />
+                                    <span>Inicio de sesión en dos pasos</span>
+                                    </label>
+                                </p>
+                                <input type="hidden" value="no" id="checkboxValue" name="checkboxValue"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- Tabla para mostrar los registros existentes -->
+                            <table class="highlight" id="data-table">
+                                <!-- Cabeza de la tabla para mostrar los títulos de las columnas -->
+                                <thead>
+                                    <tr>
+                                        <th>FECHA</th>
+                                        <th>HORA</th>
+                                        <th>OBSERVACIÓN</th>
+                                    </tr>
+                                </thead>
+                                <!-- Cuerpo de la tabla para mostrar un registro por fila -->
+                                <tbody id="tbody-security">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row center-align">
+                            <button type="submit" class="btn waves-effect blue tooltipped" data-tooltip="Guardar Cambios"><i class="material-icons">save</i></button>
+                            <a href="#" class="btn waves-effect grey tooltipped modal-close" data-tooltip="Cancelar"><i class="material-icons">cancel</i></a>
                         </div>
                     </form>
                 </div>

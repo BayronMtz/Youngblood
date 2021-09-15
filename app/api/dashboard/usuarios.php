@@ -3,6 +3,18 @@ require_once('../../helpers/database.php');
 require_once('../../helpers/validator.php');
 require_once('../../models/usuarios.php');
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+require '../../../libraries/phpmailer65/src/Exception.php';
+require '../../../libraries/phpmailer65/src/PHPMailer.php';
+require '../../../libraries/phpmailer65/src/SMTP.php';
+
+//Creando instancia para mandar correo
+$mail = new PHPMailer(true);
+//To load the Spanish version
+$mail->setLanguage('es', '../../../libraries/phpmailer65/language');
+
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
     // Se crea una sesión o se reanuda la actual para poder utilizar variables de sesión en el script.
@@ -16,12 +28,9 @@ if (isset($_GET['action'])) {
         // Se compara la acción a realizar cuando un administrador ha iniciado sesión.
         switch ($_GET['action']) {
             case 'logOut':
-                if (session_destroy()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'Sesión eliminada correctamente';
-                } else {
-                    $result['exception'] = 'Ocurrió un problema al cerrar la sesión';
-                }
+                unset($_SESSION['id_usuario']);
+                $result['message'] = 'Sesión cerrada correctamente.';
+                $result['status'] = 1;
                 break;
             case 'readProfile':
                 if ($result['dataset'] = $usuario->readProfile()) {
@@ -31,6 +40,86 @@ if (isset($_GET['action'])) {
                         $result['exception'] = Database::getException();
                     } else {
                         $result['exception'] = 'Usuario inexistente';
+                    }
+                }
+                break;
+                //Registrar dispositivo
+             case 'registerDevice':
+                if ($usuario->checkDevice()) {
+                    $result['status'] = 1;
+                    $result['message'] = 'Dispositivo registrado anteriormente.';
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        if ($usuario->registerDevice()) {
+                            $result['status'] = 1;
+                            $result['message'] = 'Dispositivo registrado.';
+                        } else {
+                            $result['exception'] = Database::getException();
+                        }
+                    }
+                }
+                break;
+            //Obtener sesiones
+            case 'getDevices':
+                if ($result['dataset'] = $usuario->getDevices()) {
+                    $result['status'] = 1;
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        $result['exception'] = 'Usted no posee sesiónes registradas.';
+                    }   
+                }
+                break;
+            //Caso para actualizar la preferencia del usuario
+            case 'updateAuth':
+                if ($usuario->updateAuth($_POST['checkboxValue'])) {
+                    $result['status'] = 1;
+                    $result['message'] = 'Actualizado correctamente.';
+                } else {
+                    $result['exception'] = Database::getException();
+                }
+                break;
+            //Caso para capturar la preferencia del usuario
+            case 'checkAuth':
+                if ($usuario->setId($_SESSION['id_usuario'])) {
+                    if ($result['dataset'] = $usuario->checkAuth()) {
+                        $result['status'] = 1;
+                    } else {
+                        if (Database::getException()) {
+                            $result['exception'] = Database::getException();
+                        } else {
+                            $result['exception'] = 'Usted no posee ninguna preferencia.';
+                        }
+                    }
+                } else {
+                    $result['exception'] = 'Id incorrecto.';
+                }
+                break;
+            //Caso para cargar los intentos fallidos
+            case 'readFails':
+                if ($result['dataset'] = $usuario->readFails()) {
+                    $result['status'] = 1;
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        $result['exception'] = 'Usted no posee intentos fallidos.';
+                    }
+                    
+                }
+                break;
+            //Caso para cargar la cantidad de intentos fallidos
+            case 'countFails':
+                if ($result['dataset'] = $usuario->countFails()) {
+                    $result['status'] = 1;
+                } else {
+                    if (Database::getException()) {
+                        $result['exception'] = Database::getException();
+                    } else {
+                        $result['exception'] = 'Usted no posee intentos fallidos.';
                     }
                 }
                 break;
@@ -64,19 +153,24 @@ if (isset($_GET['action'])) {
                 if ($usuario->setId($_SESSION['id_usuario'])) {
                     $_POST = $usuario->validateForm($_POST);
                     if ($usuario->checkPassword($_POST['clave_actual'])) {
-                        if ($_POST['clave_nueva_1'] == $_POST['clave_nueva_2']) {
-                            if ($usuario->setClave($_POST['clave_nueva_1'])) {
-                                if ($usuario->changePassword()) {
-                                    $result['status'] = 1;
-                                    $result['message'] = 'Contraseña cambiada correctamente';
+                        if ($_POST['clave_actual'] == $_POST['clave_nueva_1'] ||
+                            $_POST['clave_actual'] == $_POST['clave_nueva_2']) {
+                                $result['exception'] = 'Su clave no puede ser igual que la anterior.';
+                        } else {
+                            if ($_POST['clave_nueva_1'] == $_POST['clave_nueva_2']) {
+                                if ($usuario->setClave($_POST['clave_nueva_1'])) {
+                                    if ($usuario->changePassword()) {
+                                        $result['status'] = 1;
+                                        $result['message'] = 'Contraseña cambiada correctamente';
+                                    } else {
+                                        $result['exception'] = Database::getException();
+                                    }
                                 } else {
-                                    $result['exception'] = Database::getException();
+                                    $result['exception'] = $usuario->getPasswordError();
                                 }
                             } else {
-                                $result['exception'] = $usuario->getPasswordError();
+                                $result['exception'] = 'Claves nuevas diferentes';
                             }
-                        } else {
-                            $result['exception'] = 'Claves nuevas diferentes';
                         }
                     } else {
                         $result['exception'] = 'Clave actual incorrecta';
@@ -215,6 +309,26 @@ if (isset($_GET['action'])) {
                     $result['exception'] = 'No se puede eliminar a sí mismo';
                 }
                 break;
+            case 'active':
+                if ($_POST['id_usuario'] != $_SESSION['id_usuario']) {
+                    if ($usuario->setId($_POST['id_usuario'])) {
+                        if ($usuario->readOne()) {
+                            if ($usuario->actualizarEstado(1)) {
+                                $result['status'] = 1;
+                                $result['message'] = 'Usuario desbloqueado correctamente';
+                            } else {
+                                $result['exception'] = Database::getException();
+                            }
+                        } else {
+                            $result['exception'] = 'Usuario inexistente';
+                        }
+                    } else {
+                        $result['exception'] = 'Usuario incorrecto';
+                    }
+                } else {
+                    $result['exception'] = 'No se puede eliminar a sí mismo';
+                }
+                break;
             default:
                 $result['exception'] = 'Acción no disponible dentro de la sesión';
         }
@@ -270,17 +384,39 @@ if (isset($_GET['action'])) {
             case 'logIn':
                 $_POST = $usuario->validateForm($_POST);
                 if ($usuario->checkUser($_POST['alias'])) {
-                    if ($usuario->checkPassword($_POST['clave'])) {
-                        $result['status'] = 1;
-                        $result['message'] = 'Autenticación correcta';
-                        $_SESSION['id_usuario'] = $usuario->getId();
-                        $_SESSION['alias_usuario'] = $usuario->getAlias();
-                    } else {
-                        if (Database::getException()) {
-                            $result['exception'] = Database::getException();
+                    if($usuario->verificarEstado()) {
+                        if ($usuario->checkPassword($_POST['clave'])) {
+                            if($usuario->verificar90dias()) {
+                                if($usuario->actualizarIntentos(0)){
+                                    $result['status'] = 1;
+                                    $result['message'] = 'Autenticación correcta';
+                                    $_SESSION['id_usuario'] = $usuario->getId();
+                                    $_SESSION['alias_usuario'] = $usuario->getAlias();
+                                }
+                            } else {
+                                $result['error'] = 1;
+                                $result['exception'] = 'Debes actualizar tu contraseña';
+                                $_SESSION['id_usuario_tmp'] = $usuario->getId();
+                                unset($_SESSION['id_usuario']);
+                            }
                         } else {
-                            $result['exception'] = 'Clave incorrecta';
+                            $datos = $usuario->verificarIntentos();
+                            if($datos['intentos'] < 3){
+                                if($usuario->actualizarIntentos($datos['intentos'] + 1)) {
+                                    if($usuario->accionUsuario('Intento fallido N°'.$datos['intentos'] + 1.)) {
+                                        $result['exception'] = 'La contraseña es incorrecta';
+                                    }
+                                }
+                            } else {
+                                if($usuario->actualizarEstado(0)){
+                                    if($usuario->accionUsuario('Se ha bloqueado el usuario')) {
+                                        $result['exception'] = 'Se ha bloqueado el usuario por intentos fallidos';
+                                    } 
+                                }
+                            }
                         }
+                    } else {
+                        $result['exception'] = 'El usuario está bloqueado.';
                     }
                 } else {
                     if (Database::getException()) {
@@ -288,6 +424,128 @@ if (isset($_GET['action'])) {
                     } else {
                         $result['exception'] = 'Alias incorrecto';
                     }
+                }
+                break;
+            case 'changePassword':
+                if ($usuario->setId($_SESSION['id_usuario_tmp'])) {
+                    $_POST = $usuario->validateForm($_POST);
+                    if ($usuario->checkPassword($_POST['clave_actual'])) {
+                        if ($_POST['clave_actual'] == $_POST['clave_nueva_1'] ||
+                            $_POST['clave_actual'] == $_POST['clave_nueva_2']) {
+                                $result['exception'] = 'Su clave no puede ser igual que la anterior.';
+                        } else {
+                            if ($_POST['clave_nueva_1'] == $_POST['clave_nueva_2']) {
+                                if ($usuario->setClave($_POST['clave_nueva_1'])) {
+                                    if ($usuario->changePasswordOut()) {
+                                        $result['status'] = 1;
+                                        $result['message'] = 'Contraseña cambiada correctamente';
+                                        unset($_SESSION['id_usuario_tmp']);
+                                        $_SESSION['id_usuario'] = $usuario->getId();
+                                        $usuario->actualizarFecha();
+                                    } else {
+                                        $result['exception'] = Database::getException();
+                                    }
+                                } else {
+                                    $result['exception'] = $usuario->getPasswordError();
+                                }
+                            } else {
+                                $result['exception'] = 'Claves nuevas diferentes';
+                            }
+                        }
+                    } else {
+                        $result['exception'] = 'Clave actual incorrecta';
+                    }
+                } else {
+                    $result['exception'] = 'Usuario incorrecto';
+                }
+                break;
+            case 'validateEmail':
+                $_POST = $usuario->validateForm($_POST);
+                if ($usuario->setCorreo($_POST['txtCorreo'])) {
+                    if ($correo = $usuario->checkEmail()) {
+                        if ($correo['correo_usuario'] == $_POST['txtCorreo']) {
+                            $_SESSION['id_usuario_tmp'] = $correo['id_usuario'];
+                            $_SESSION['correo_usuario'] = $correo['correo_usuario'];
+                            $result['status'] = 1;
+                            $result['message'] = 'Correo verificado.';
+                        } else {
+                            $result['exception'] = 'El correo electrónico ingresado no coincide con su cuenta.';
+                        }
+                    } else {
+                        if (Database::getException()) {
+                            $result['exception'] = Database::getException();
+                        } else {
+                            $result['exception'] = 'No hay correo';
+                        }
+                    }
+                } else {
+                    $result['exception'] = 'Id pendiente de ingresar.';
+                }
+                break;
+            case 'sendEmail':
+                $_SESSION['codigo_email'] = random_int(100, 999999);
+                try {
+                        
+                    //Ajustes del servidor
+                    $mail->SMTPDebug = 0;                   
+                    $mail->isSMTP();                                            
+                    $mail->Host       = 'smtp.gmail.com';                     
+                    $mail->SMTPAuth   = true;                                   
+                    $mail->Username   = '20190145@ricaldone.edu.sv';                     
+                    $mail->Password   = '42861798';                               
+                    $mail->SMTPSecure = 'tls';            
+                    $mail->Port       = 587;                                    
+                
+                    //Receptores
+                    $mail->setFrom('20190145@ricaldone.edu.sv', 'Youngblood Support');
+                    $mail->addAddress($_SESSION['correo_usuario']);    
+                
+                    //Contenido
+                    $mail->isHTML(true);                                  //Set email format to HTML
+                    $mail->Subject = 'Codigo de Verificación';
+                    $mail->Body    = 'Tu código de verificación es: <b>' . $_SESSION['codigo_email'] . '</b>.';
+                    $mail->AltBody = 'Tu código de verificación es: ' . $_SESSION['codigo_email'] . '.';
+                
+                    if($mail->send()){
+                        $result['status'] = 1;
+                        $result['message'] = 'Correo verificado correctamente';
+                    }
+                } catch (Exception $e) {
+                    $result['exception'] = $mail->ErrorInfo;
+                }
+                break;
+            case 'validateCode':
+                $_POST = $usuario->validateForm($_POST);
+                if ($_SESSION['codigo_email'] == $_POST['txtCodigo']) {
+                    unset($_SESSION['codigo_email']);
+                    $result['status'] = 1;
+                    $result['message'] = 'Código verificado correctamente.';
+                } else {
+                    $result['exception'] = 'El código que usted ha ingresado es invalido.';
+                }
+                
+                break;
+            case 'changePasswordOut':
+                if ($usuario->setId($_SESSION['id_usuario_tmp'])) {
+                    $_POST = $usuario->validateForm($_POST);
+                    if ($_POST['clave_nueva_1'] == $_POST['clave_nueva_2']) {
+                        if ($usuario->setClave($_POST['clave_nueva_1'])) {
+                            if ($usuario->changePasswordOut()) {
+                                $result['status'] = 1;
+                                $result['message'] = 'Contraseña cambiada correctamente';
+                                unset($_SESSION['id_usuario_tmp']);
+                                $usuario->actualizarFecha();
+                            } else {
+                                $result['exception'] = Database::getException();
+                            }
+                        } else {
+                            $result['exception'] = $usuario->getPasswordError();
+                        }
+                    } else {
+                        $result['exception'] = 'Claves nuevas diferentes';
+                    }
+                } else {
+                    $result['exception'] = 'Usuario incorrecto';
                 }
                 break;
             default:

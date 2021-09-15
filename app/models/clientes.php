@@ -15,6 +15,7 @@ class Clientes extends Validator
     private $direccion = null;
     private $usuario = null;
     private $clave = null;
+    private $alias = null;
     private $estado = null; // Valor por defecto en la base de datos: true
 
     /*
@@ -84,6 +85,16 @@ class Clientes extends Validator
     {
         if ($this->validateDUI($value)) {
             $this->dui = $value;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function setAlias($value)
+    {
+        if ($this->validateAlphanumeric($value, 1, 50)) {
+            $this->alias = $value;
             return true;
         } else {
             return false;
@@ -168,6 +179,11 @@ class Clientes extends Validator
         return $this->usuario;
     }
 
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
     public function getNacimiento()
     {
         return $this->nacimiento;
@@ -232,6 +248,15 @@ class Clientes extends Validator
         }
     }
 
+    public function readProfile()
+    {
+        $sql = 'SELECT id_cliente, nombres_cliente, apellidos_cliente, correo_cliente, alias_usuario 
+                FROM clientes 
+                WHERE id_cliente = ?';
+        $params = array($_SESSION['id_cliente']);
+        return Database::getRow($sql, $params);
+    }
+
     public function checkPassword($password)
     {
         $sql = 'SELECT clave_cliente FROM clientes WHERE id_cliente = ?';
@@ -242,6 +267,62 @@ class Clientes extends Validator
         } else {
             return false;
         }
+    }
+
+    //Registrar dispositivo
+    public function registerDevice()
+    {
+        $sql = 'INSERT INTO dispositivos_cliente(dispositivo, fecha, hora, id_cliente) VALUES (?,current_date,current_time,?)';
+        $params = array(php_uname(), $_SESSION['id_cliente']);
+        return Database::executeRow($sql, $params);
+    }
+
+    //Verificar si el dispositivo ya existe
+    public function checkDevice()
+    {
+        $sql = 'SELECT*FROM dispositivos_cliente WHERE dispositivo = ? AND id_cliente = ?';
+        $params = array(php_uname(), $_SESSION['id_cliente']);
+        return Database::getRow($sql, $params);
+    }
+
+    //Obtener las sesiones de un dispositivo
+    public function getDevices()
+    {
+        $sql = 'SELECT*FROM dispositivos_cliente WHERE id_cliente = ?';
+        $params = array($_SESSION['id_cliente']);
+        return Database::getRows($sql, $params);
+    }
+
+    //Carga los intentos fallidos
+    public function readFails()
+    {
+        $sql = 'SELECT*FROM bitacora WHERE id_cliente = ?';
+        $params = array($_SESSION['id_cliente']);
+        return Database::getRows($sql, $params);
+    }
+
+    //Cuenta los intentos fallidos
+    public function countFails()
+    {
+        $sql = 'SELECT COUNT(id_bitacora) as intentos FROM bitacora WHERE id_cliente = ?';
+        $params = array($_SESSION['id_cliente']);
+        return Database::getRow($sql, $params);
+    }
+
+    //Actualizar preferencia del usuario
+    public function updateAuth($value)
+    {
+        $sql = 'UPDATE clientes SET dobleverificacion = ? WHERE id_cliente = ?';
+        $params = array($value, $_SESSION['id_cliente']);
+        return Database::executeRow($sql, $params);
+    }
+
+    //Capturar preferencia del usuario
+    public function checkAuth()
+    {
+        $sql = 'SELECT dobleverificacion FROM clientes WHERE id_cliente = ?';
+        $params = array($this->id);
+        return Database::getRow($sql, $params);
     }
 
     public function changePassword()
@@ -258,6 +339,15 @@ class Clientes extends Validator
                 SET nombres_cliente = ?, apellidos_cliente = ?, correo_cliente = ?, dui_cliente = ?, telefono_cliente = ?, nacimiento_cliente = ?, direccion_cliente = ?, alias_usuario = ?
                 WHERE id_cliente = ?';
         $params = array($this->nombres, $this->apellidos, $this->correo, $this->dui, $this->telefono, $this->nacimiento, $this->direccion, $this->usuario, $this->id);
+        return Database::executeRow($sql, $params);
+    }
+
+    public function editProfile2()
+    {
+        $sql = 'UPDATE clientes
+                SET nombres_cliente = ?, apellidos_cliente = ?, correo_cliente = ?, alias_usuario = ?
+                WHERE id_cliente = ?';
+        $params = array($this->nombres, $this->apellidos, $this->correo, $this->alias, $_SESSION['id_cliente']);
         return Database::executeRow($sql, $params);
     }
 
@@ -287,9 +377,9 @@ class Clientes extends Validator
     {
         // Se encripta la clave por medio del algoritmo bcrypt que genera un string de 60 caracteres.
         $hash = password_hash($this->clave, PASSWORD_DEFAULT);
-        $sql = 'INSERT INTO clientes(nombres_cliente, apellidos_cliente, correo_cliente, dui_cliente, telefono_cliente, nacimiento_cliente, direccion_cliente, clave_cliente, fecha_registro, alias_usuario)
-                VALUES(?, ?, ?, ?, ?, ?, ?, ?, current_date, ?)';
-        $params = array($this->nombres, $this->apellidos, $this->correo, $this->dui, $this->telefono, $this->nacimiento, $this->direccion, $hash, $this->usuario);
+        $sql = 'INSERT INTO clientes(nombres_cliente, apellidos_cliente, correo_cliente, dui_cliente, telefono_cliente, nacimiento_cliente, direccion_cliente, clave_cliente, fecha_registro, alias_usuario,intentos,fecha_clave)
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?, current_date, ?,?,current_date)';
+        $params = array($this->nombres, $this->apellidos, $this->correo, $this->dui, $this->telefono, $this->nacimiento, $this->direccion, $hash, $this->usuario,0);
         return Database::executeRow($sql, $params);
     }
 
@@ -326,5 +416,78 @@ class Clientes extends Validator
                 WHERE id_cliente = ?';
         $params = array($this->id);
         return Database::executeRow($sql, $params);
+    }
+
+    public function verificarEstado(){
+        if ($this->estado == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function verificarIntentos(){
+        $sql = 'SELECT intentos
+        FROM clientes
+        WHERE id_cliente = ?';
+        $params = array($this->id);
+        return Database::getRow($sql, $params);
+    }
+
+    public function actualizarIntentos($intentos)
+    {
+        $sql = 'UPDATE clientes 
+                SET intentos = ?
+                WHERE id_cliente = ?';
+        $params = array($intentos, $this->id);
+        return Database::executeRow($sql, $params);
+    }
+
+    public function actualizarEstado($estado)
+    {
+        $sql = 'UPDATE clientes
+                SET estado_cliente = ?
+                WHERE id_cliente = ?';
+        $params = array($estado, $this->id);
+        return Database::executeRow($sql, $params);
+    }
+
+    public function accionCliente($observacion)
+    {
+        $sql = 'INSERT INTO bitacora(id_cliente,fecha,hora,observacion) 
+                VALUES(?,current_date,current_time,?)';
+        $params = array($this->id, $observacion);
+        return Database::executeRow($sql, $params);
+    }
+
+    public function verificar90dias(){
+        $sql = 'SELECT fecha_clave FROM clientes 
+                WHERE id_cliente = ? AND fecha_clave > (SELECT current_date - 90)';
+        $params = array($this->id);
+        return Database::getRow($sql, $params);
+    }
+
+    public function changePasswordOut()
+    {
+        $hash = password_hash($this->clave, PASSWORD_DEFAULT);
+        $sql = 'UPDATE clientes SET clave_cliente = ? WHERE id_cliente = ?';
+        $params = array($hash, $_SESSION['id_cliente_tmp']);
+        return Database::executeRow($sql, $params);
+    }
+
+    public function actualizarFecha()
+    {
+        $sql = 'UPDATE clientes 
+                SET fecha_clave = current_date
+                WHERE id_cliente = ?';
+        $params = array($this->id);
+        return Database::executeRow($sql, $params);
+    }
+
+    public function checkEmail()
+    {
+        $sql = 'SELECT correo_cliente,id_cliente FROM clientes WHERE correo_cliente = ?';
+        $params = array($this->correo);
+        return Database::getRow($sql, $params);
     }
 }

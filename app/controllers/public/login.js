@@ -16,6 +16,8 @@ document.getElementById('session-form').addEventListener('submit', function (eve
                 // Se comprueba si la respuesta es satisfactoria, de lo contrario se muestra un mensaje con la excepción.
                 if (response.status) {
                     sweetAlert(1, response.message, 'index.php');
+                } else if (response.error){
+                    sweetAlert(3, response.exception,'cambiar_contra.php');
                 } else {
                     sweetAlert(2, response.exception, null);
                 }
@@ -27,3 +29,15 @@ document.getElementById('session-form').addEventListener('submit', function (eve
         console.log(error);
     });
 });
+
+//Función para mostrar contraseña
+function showHidePassword(checkbox, pass1, pass2, pass3) {
+    var check = document.getElementById(checkbox);
+    var password = document.getElementById(pass1);
+    //Verificando el estado del check
+    if (check.checked == true) {
+        password.type = 'text';
+    } else {
+        password.type = 'password';
+    }
+}
