@@ -309,6 +309,21 @@ class Clientes extends Validator
         return Database::getRow($sql, $params);
     }
 
+    //Actualizar preferencia del usuario
+    public function updateAuth($value)
+    {
+        $sql = 'UPDATE clientes SET dobleverificacion = ? WHERE id_cliente = ?';
+        $params = array($value, $_SESSION['id_cliente']);
+        return Database::executeRow($sql, $params);
+    }
+
+    //Capturar preferencia del usuario
+    public function checkAuth()
+    {
+        $sql = 'SELECT dobleverificacion FROM clientes WHERE id_cliente = ?';
+        $params = array($this->id);
+        return Database::getRow($sql, $params);
+    }
 
     public function changePassword()
     {

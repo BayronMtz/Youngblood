@@ -288,7 +288,7 @@ class Dashboard_Page
             <!-- Componente Modal para mostrar el formulario de seguridad -->
             <div id="security-modal" class="modal">
                 <div class="modal-content">
-                    <h4 class="center-align">Dispositivos</h4>
+                    <h4 class="center-align">Panel de Seguridad</h4>
                     <form method="post" id="security-form">
                         <div class="row">
                             <div class="col s12 m6">
@@ -303,7 +303,7 @@ class Dashboard_Page
                                     <span>Inicio de sesión en dos pasos</span>
                                     </label>
                                 </p>
-                                <input type="hidden" value="no" id="checkboxValue"/>
+                                <input type="hidden" value="no" id="checkboxValue" name="checkboxValue"/>
                             </div>
                         </div>
                         <div class="row">

@@ -73,6 +73,31 @@ if (isset($_GET['action'])) {
                     }   
                 }
                 break;
+            //Caso para actualizar la preferencia del usuario
+            case 'updateAuth':
+                if ($usuario->updateAuth($_POST['checkboxValue'])) {
+                    $result['status'] = 1;
+                    $result['message'] = 'Actualizado correctamente.';
+                } else {
+                    $result['exception'] = Database::getException();
+                }
+                break;
+            //Caso para capturar la preferencia del usuario
+            case 'checkAuth':
+                if ($usuario->setId($_SESSION['id_usuario'])) {
+                    if ($result['dataset'] = $usuario->checkAuth()) {
+                        $result['status'] = 1;
+                    } else {
+                        if (Database::getException()) {
+                            $result['exception'] = Database::getException();
+                        } else {
+                            $result['exception'] = 'Usted no posee ninguna preferencia.';
+                        }
+                    }
+                } else {
+                    $result['exception'] = 'Id incorrecto.';
+                }
+                break;
             //Caso para cargar los intentos fallidos
             case 'readFails':
                 if ($result['dataset'] = $usuario->readFails()) {
@@ -86,7 +111,6 @@ if (isset($_GET['action'])) {
                     
                 }
                 break;
-
             //Caso para cargar la cantidad de intentos fallidos
             case 'countFails':
                 if ($result['dataset'] = $usuario->countFails()) {

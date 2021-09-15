@@ -87,22 +87,31 @@ function openDevicesDialog() {
     }).catch(function (error) {
         console.log(error);
     });
+}
 
-    //Contador de intentos fallidos
-    fetch(API + 'countFails', {
-        method: 'get'
+// Método manejador de eventos que se ejecuta cuando se envía el formulario de editar seguridad.
+document.getElementById('security-form').addEventListener('submit', function (event) {
+    // Se evita recargar la página web después de enviar el formulario.
+    event.preventDefault();
+
+    fetch(API + 'updateAuth', {
+        method: 'post',
+        body: new FormData(document.getElementById('security-form'))
     }).then(function (request) {
         // Se verifica si la petición es correcta, de lo contrario se muestra un mensaje indicando el problema.
         if (request.ok) {
             request.json().then(function (response) {
                 // Se comprueba si la respuesta es satisfactoria, de lo contrario se muestra un mensaje con la excepción.
                 if (response.status) {
-                    //Se asigna el numero obtenido al label
-                    document.getElementById('lblIntentos').textContent = response.dataset.intentos;
-                    // Se inicializa el componente Tooltip asignado a los enlaces para que funcionen las sugerencias textuales.
-                    M.Tooltip.init(document.querySelectorAll('.tooltipped'));
-                    // Se actualizan los campos para que las etiquetas (labels) no queden sobre los datos.
-                    M.updateTextFields();
+                    // Se cierra la caja de dialogo (modal) del formulario.
+                    let instance = M.Modal.getInstance(document.getElementById('security-modal'));
+                    instance.close();
+                    // Se muestra un mensaje
+                    if (document.getElementById('checkboxValue').value == 'no') {
+                        sweetAlert(1, 'Inicio de sesión en dos pasos desactivado correctamente.', null);
+                    } else {
+                        sweetAlert(1, 'Inicio de sesión en dos pasos activado correctamente.', null);
+                    }
                 } else {
                     sweetAlert(2, response.exception, null);
                 }
@@ -113,7 +122,9 @@ function openDevicesDialog() {
     }).catch(function (error) {
         console.log(error);
     });
-}
+
+    
+});
 
 // Función para mostrar el formulario de editar seguridad
 function openSecurityDialog() {
@@ -145,6 +156,62 @@ function openSecurityDialog() {
                     // Se agregan las filas al cuerpo de la tabla mediante su id para mostrar los registros.
                     document.getElementById('tbody-security').innerHTML = content;
 
+                    // Se inicializa el componente Tooltip asignado a los enlaces para que funcionen las sugerencias textuales.
+                    M.Tooltip.init(document.querySelectorAll('.tooltipped'));
+                    // Se actualizan los campos para que las etiquetas (labels) no queden sobre los datos.
+                    M.updateTextFields();
+                } else {
+                    sweetAlert(2, response.exception, null);
+                }
+            });
+        } else {
+            console.log(request.status + ' ' + request.statusText);
+        }
+    }).catch(function (error) {
+        console.log(error);
+    });
+
+    //Contador de intentos fallidos
+    fetch(API + 'countFails', {
+        method: 'get'
+    }).then(function (request) {
+        // Se verifica si la petición es correcta, de lo contrario se muestra un mensaje indicando el problema.
+        if (request.ok) {
+            request.json().then(function (response) {
+                // Se comprueba si la respuesta es satisfactoria, de lo contrario se muestra un mensaje con la excepción.
+                if (response.status) {
+                    //Se asigna el numero obtenido al label
+                    document.getElementById('lblIntentos').textContent = response.dataset.intentos;
+                    // Se inicializa el componente Tooltip asignado a los enlaces para que funcionen las sugerencias textuales.
+                    M.Tooltip.init(document.querySelectorAll('.tooltipped'));
+                    // Se actualizan los campos para que las etiquetas (labels) no queden sobre los datos.
+                    M.updateTextFields();
+                } else {
+                    sweetAlert(2, response.exception, null);
+                }
+            });
+        } else {
+            console.log(request.status + ' ' + request.statusText);
+        }
+    }).catch(function (error) {
+        console.log(error);
+    });
+
+    //Capturar preferencia del usuario
+    fetch(API + 'checkAuth', {
+        method: 'get'
+    }).then(function (request) {
+        // Se verifica si la petición es correcta, de lo contrario se muestra un mensaje indicando el problema.
+        if (request.ok) {
+            request.json().then(function (response) {
+                // Se comprueba si la respuesta es satisfactoria, de lo contrario se muestra un mensaje con la excepción.
+                if (response.status) {
+                    if (response.dataset.dobleverificacion == 'si') {
+                        document.getElementById('checkboxValue').value = response.dataset.dobleverificacion;
+                        document.getElementById('checkbox_autenticacion').setAttribute('checked', true);
+                    } else {
+                        document.getElementById('checkboxValue').value = response.dataset.dobleverificacion;
+                    }
                     // Se inicializa el componente Tooltip asignado a los enlaces para que funcionen las sugerencias textuales.
                     M.Tooltip.init(document.querySelectorAll('.tooltipped'));
                     // Se actualizan los campos para que las etiquetas (labels) no queden sobre los datos.

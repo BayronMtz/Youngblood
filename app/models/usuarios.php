@@ -194,6 +194,22 @@ class Usuarios extends Validator
         return Database::executeRow($sql, $params);
     }
 
+    //Actualizar preferencia del usuario
+    public function updateAuth($value)
+    {
+        $sql = 'UPDATE usuarios SET dobleverificacion = ? WHERE id_usuario = ?';
+        $params = array($value, $_SESSION['id_usuario']);
+        return Database::executeRow($sql, $params);
+    }
+
+    //Capturar preferencia del usuario
+    public function checkAuth()
+    {
+        $sql = 'SELECT dobleverificacion FROM usuarios WHERE id_usuario = ?';
+        $params = array($this->id);
+        return Database::getRow($sql, $params);
+    }
+
     //Registrar dispositivo
     public function registerDevice()
     {
