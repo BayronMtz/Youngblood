@@ -483,4 +483,11 @@ class Clientes extends Validator
         $params = array($this->id);
         return Database::executeRow($sql, $params);
     }
+
+    public function checkEmail()
+    {
+        $sql = 'SELECT correo_cliente,id_cliente FROM clientes WHERE correo_cliente = ?';
+        $params = array($this->correo);
+        return Database::getRow($sql, $params);
+    }
 }

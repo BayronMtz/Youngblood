@@ -491,13 +491,13 @@ if (isset($_GET['action'])) {
                     $mail->isSMTP();                                            
                     $mail->Host       = 'smtp.gmail.com';                     
                     $mail->SMTPAuth   = true;                                   
-                    $mail->Username   = 'polusmarket2021@gmail.com';                     
-                    $mail->Password   = 'polus123';                               
+                    $mail->Username   = '20190145@ricaldone.edu.sv';                     
+                    $mail->Password   = '42861798';                               
                     $mail->SMTPSecure = 'tls';            
                     $mail->Port       = 587;                                    
                 
                     //Receptores
-                    $mail->setFrom('polusmarket2021@gmail.com', 'Polus Support');
+                    $mail->setFrom('20190145@ricaldone.edu.sv', 'Youngblood Support');
                     $mail->addAddress($_SESSION['correo_usuario']);    
                 
                     //Contenido

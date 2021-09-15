@@ -26,8 +26,11 @@ Dashboard_Page::headerTemplate('Iniciar sesión');
                     <span>Mostrar Contraseña</span>
                     </label>
                 </p>
+                <a href="verificar_email.php" class="form-text">¿Hás olvidado tu contraseña?</a>
             </div>
+            
             <div class="col s12 center-align">
+                <br>
                 <button type="submit" class="btn waves-effect blue tooltipped" data-tooltip="Ingresar"><i class="material-icons">send</i></button>
             </div>
         </form>
