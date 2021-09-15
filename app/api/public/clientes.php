@@ -29,7 +29,8 @@ if (isset($_GET['action'])) {
         switch ($_GET['action']) {
             case 'logOut':
                 unset($_SESSION['id_cliente']);
-                unset($_SESSION['alias_usuario']);
+                unset($_SESSION['nombres_cliente']);
+                unset($_SESSION['apellidos_cliente']);
                 $result['message'] = 'Sesión cerrada correctamente.';
                 $result['status'] = 1;
                 break;
@@ -327,6 +328,8 @@ if (isset($_GET['action'])) {
                                     $_SESSION['id_cliente'] = $cliente->getId();
                                     $_SESSION['correo_cliente'] = $cliente->getCorreo();
                                     $_SESSION['alias_usuario'] = $cliente->getUsuario();
+                                    $_SESSION['nombres_cliente'] = $cliente->getNombres();
+                                    $_SESSION['apellidos_cliente'] = $cliente->getApellidos();
                                     //Se captura si el usuario tiene activada la verificacion en dos pasos
                                     if ($data = $cliente->checkAuth()) {
                                         if ($data['dobleverificacion'] == 'si') {

@@ -48,7 +48,7 @@ class Public_Page
                                         <li><a href="index.php"><i class="material-icons left">search</i>Buscar producto</a></li>
                                         <li><a href="cart.php"><i class="material-icons left">shopping_cart</i>Carrito</a></li>
                                         <li><a href="pedidos.php"><i class="material-icons left">event_note</i>Mis Pedidos</a></li>
-                                        <li><a href="#" class="dropdown-trigger" data-target="dropdown"><i class="material-icons left">verified_user</i>Cuenta: <b>' . $_SESSION['alias_cliente'] . '</b></a></li>
+                                        <li><a href="#" class="dropdown-trigger" data-target="dropdown"><i class="material-icons left">verified_user</i>Cuenta: <b>' . $_SESSION['nombres_cliente'] . ' ' . $_SESSION['apellidos_cliente'] . '</b></a></li>
                                     </ul>
                                     <ul id="dropdown" class="dropdown-content">
                                         <li><a href="#" onclick="openProfileDialog()"><i class="material-icons">face</i>Editar perfil</a></li>
