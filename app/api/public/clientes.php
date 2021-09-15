@@ -282,13 +282,13 @@ if (isset($_GET['action'])) {
                     $mail->isSMTP();                                            
                     $mail->Host       = 'smtp.gmail.com';                     
                     $mail->SMTPAuth   = true;                                   
-                    $mail->Username   = '20190145@ricaldone.edu.sv';                     
-                    $mail->Password   = '42861798';                               
+                    $mail->Username   = 'be.youngbloodsv@gmail.com';                     
+                    $mail->Password   = 'Cbmartinex10';                               
                     $mail->SMTPSecure = 'tls';            
                     $mail->Port       = 587;                                    
                 
                     //Receptores
-                    $mail->setFrom('20190145@ricaldone.edu.sv', 'Youngblood Support');
+                    $mail->setFrom('be.youngbloodsv@gmail.com', 'Youngblood Support');
                     $mail->addAddress($_SESSION['correo_cliente']);    
                 
                     //Contenido
@@ -451,13 +451,13 @@ if (isset($_GET['action'])) {
                     $mail->isSMTP();                                            
                     $mail->Host       = 'smtp.gmail.com';                     
                     $mail->SMTPAuth   = true;                                   
-                    $mail->Username   = '20190145@ricaldone.edu.sv';                     
-                    $mail->Password   = '42861798';                               
+                    $mail->Username   = 'be.youngbloodsv@gmail.com';                     
+                    $mail->Password   = 'Cbmartinex10';                               
                     $mail->SMTPSecure = 'tls';            
                     $mail->Port       = 587;                                    
                 
                     //Receptores
-                    $mail->setFrom('20190145@ricaldone.edu.sv', 'Youngblood Support');
+                    $mail->setFrom('be.youngbloodsv@gmail.com', 'Youngblood Support');
                     $mail->addAddress($_SESSION['correo_cliente']);    
                 
                     //Contenido
